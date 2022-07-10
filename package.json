@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "dev": "vite --mode dev",
+    "build": "vue-tsc --noEmit && vite build --mode prod",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "animate.css": "^4.1.1",
     "axios": "^0.27.2",
     "element-plus": "^2.2.8",
+    "nprogress": "^0.2.0",
     "pinia": "^2.0.14",
     "vue": "^3.2.25",
     "vue-router": "4"

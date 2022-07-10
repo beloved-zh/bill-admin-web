@@ -6,6 +6,17 @@ export const Layout = () => import('@/layout/index.vue');
 export const constantRoutes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@views/dashboard/index.vue'),
+        name: 'Dashboard'
+      }
+    ]
+  },
+  {
+    path: '/login',
     component: () => import('@views/login/index.vue'),
     meta: { hidden: true },
   }

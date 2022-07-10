@@ -27,8 +27,17 @@
     ],
     "removeComments": true,
     "paths": {
-      "/@/*": ["src/*"],
-      "/#/*": ["types/*"]
+      "@/*": ["src/*"],
+      "@api/*": ["src/api/*"],
+      "@assets/*": ["src/assets/*"],
+      "@components/*": ["src/components/*"],
+      "@enums/*": ["src/enums/*"],
+      "@layout/*": ["src/layout/*"],
+      "@pinia/*": ["src/pinia/*"],
+      "@router/*": ["src/router/*"],
+      "@store/*": ["src/store/*"],
+      "@utils/*": ["src/utils/*"],
+      "@views/*": ["src/views/*"]
     }
   },
   "include": [

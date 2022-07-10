@@ -9,7 +9,6 @@
       </div>
       <el-form-item>
         <el-input
-            v-model="loginForm.username"
             placeholder="username"
             name="username"
             type="text"
@@ -25,7 +24,6 @@
       </el-form-item>
       <el-form-item>
         <el-input
-            v-model="loginForm.password"
             placeholder="password"
             name="password"
             type="password"
@@ -41,10 +39,9 @@
       </el-form-item>
       <el-form-item>
         <el-input
-            v-model="loginForm.code"
             placeholder="请输入验证码"
-            name="code"
-            type="text"
+            name="password"
+            type="password"
             tabindex="2"
             :show-password="true"
         >
@@ -67,7 +64,7 @@
             size="default"
             type="primary"
             style="width: 100%"
-            @click.prevent="handleLogin"
+
         >
           登录
         </el-button>
@@ -78,22 +75,6 @@
 
 <script setup lang="ts">
   import SvgIcon from '@components/SvgIcon/index.vue'
-
-  import { LoginFormData } from '@api/login/types'
-  import { login } from '@api/login'
-
-  let loginForm = reactive<LoginFormData>({
-    username: '',
-    password: '',
-    code: '',
-    uuid: ''
-  })
-
-  const handleLogin = () => {
-    login(loginForm).then(res => {
-      console.log(res)
-    })
-  }
 </script>
 
 <style scoped lang="less">

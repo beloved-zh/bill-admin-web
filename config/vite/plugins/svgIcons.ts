@@ -9,5 +9,5 @@ export const ConfigSvgIconsPlugin = () => {
     iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
     // 指定symbolId格式
     symbolId: 'icon-[dir]-[name]'
-  });
-};
+  })
+}

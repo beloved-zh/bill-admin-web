@@ -1,6 +1,6 @@
 
-import AutoImport from 'unplugin-auto-import/vite';
-import { ElementPlusResolver, VueUseComponentsResolver } from 'unplugin-vue-components/resolvers';
+import AutoImport from 'unplugin-auto-import/vite'
+import { ElementPlusResolver, VueUseComponentsResolver } from 'unplugin-vue-components/resolvers'
 
 // https://github.com/antfu/unplugin-auto-import
 export const AutoImportDeps = () => {
@@ -28,6 +28,6 @@ export const AutoImportDeps = () => {
 
     ],
 
-    resolvers: [ElementPlusResolver(), VueUseComponentsResolver()],
-  });
-};
+    resolvers: [ElementPlusResolver(), VueUseComponentsResolver()]
+  })
+}

@@ -1,6 +1,6 @@
 
-import Components from 'unplugin-vue-components/vite';
-import { ElementPlusResolver, VueUseComponentsResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver, VueUseComponentsResolver } from 'unplugin-vue-components/resolvers'
 
 // https://github.com/antfu/unplugin-vue-components
 export const AutoRegistryComponents = () => {
@@ -40,6 +40,6 @@ export const AutoRegistryComponents = () => {
     include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
     exclude: [/[\\/]node_modules[\\/]/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
 
-    resolvers: [ElementPlusResolver(), VueUseComponentsResolver()],
-  });
-};
+    resolvers: [ElementPlusResolver(), VueUseComponentsResolver()]
+  })
+}
