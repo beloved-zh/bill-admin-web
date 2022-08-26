@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { RequestConfig, RequestInterceptors } from './types'
 
@@ -23,9 +23,6 @@ class Request {
             this.interceptors?.responseInterceptors,
             this.interceptors?.responseInterceptorsCatch,
         )
-    }
-    request<T>(config: RequestConfig): Promise<AxiosResponse<T>> {
-        return this.instance.request<T>(config)
     }
 }
 

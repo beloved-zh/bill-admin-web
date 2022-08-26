@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3505787 */
-  src: url('iconfont.woff2?t=1657168590842') format('woff2'),
-       url('iconfont.woff?t=1657168590842') format('woff'),
-       url('iconfont.ttf?t=1657168590842') format('truetype'),
-       url('iconfont.svg?t=1657168590842#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1661417216147') format('woff2'),
+       url('iconfont.woff?t=1661417216147') format('woff'),
+       url('iconfont.ttf?t=1661417216147') format('truetype'),
+       url('iconfont.svg?t=1661417216147#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,7 +14,63 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-valid_code:before {
+.icon-sousuo:before {
+  content: "\e62f";
+}
+
+.icon-yueliang:before {
+  content: "\e631";
+}
+
+.icon-baitianmoshi:before {
+  content: "\e769";
+}
+
+.icon-bianji:before {
+  content: "\eb61";
+}
+
+.icon-guanbi:before {
+  content: "\eb6a";
+}
+
+.icon-huanyuanhuabu:before {
+  content: "\ec13";
+}
+
+.icon-quanping:before {
+  content: "\ec14";
+}
+
+.icon-zhankai:before {
+  content: "\e602";
+}
+
+.icon-shousuo:before {
+  content: "\e60a";
+}
+
+.icon-phone:before {
+  content: "\e8b9";
+}
+
+.icon-gitee:before {
+  content: "\e60d";
+}
+
+.icon-github:before {
+  content: "\e691";
+}
+
+.icon-weixin:before {
+  content: "\e600";
+}
+
+.icon-qq:before {
+  content: "\e882";
+}
+
+.icon-valid-code:before {
   content: "\e636";
 }
 

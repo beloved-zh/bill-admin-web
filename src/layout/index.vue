@@ -1,19 +1,19 @@
 <template>
-  <el-container>
-    <Sidebar class="sidebar-container"></Sidebar>
-    <el-container>
-      <el-header>Header</el-header>
-      <el-main>Main</el-main>
+  <el-container direction="horizontal" class="app-layout">
+    <Sidebar/>
+    <el-container direction="vertical">
+      <Header/>
+      <el-main style="background-color: #fefefe">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script setup lang="ts">
   import Sidebar from '@layout/components/Sidebar/index.vue'
+  import Header from '@layout/components/Header/index.vue'
 </script>
 
 <style scoped lang="less">
-  .app {
-    height: 100%;
-  }
 </style>

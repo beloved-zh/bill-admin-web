@@ -1,8 +1,8 @@
 import Request from './request'
-import { AxiosResponse } from 'axios'
-
+import type { AxiosResponse } from 'axios'
 import type { RequestConfig } from './request/types'
 import { RequestEnum, ContentTypeEnum } from '@enums/httpEnums'
+import { ElMessage } from 'element-plus'
 
 interface MyResponse<T = any> {
     code: number
@@ -19,33 +19,37 @@ const defaultRequest = new Request({
     interceptors: {
         // 请求拦截器
         requestInterceptors: (config: RequestConfig<MyResponse>) => {
-            console.log('实例请求拦截器')
             return config
         },
         requestInterceptorsCatch: err => {
-            console.log('请求失败的拦截')
             return err
         },
         // 响应拦截器
         responseInterceptors: (result:AxiosResponse<MyResponse>) => {
-            console.log('实例响应拦截器', result)
-            return result.data
+            const { code, message, data } = result.data
+            if (code === 2000) {
+                return data
+            } else {
+                ElMessage({
+                    message: message || '系统内部错误',
+                    type: 'error'
+                })
+                return Promise.reject(new Error(message || '系统内部错误'));
+            }
         },
         responseInterceptorsCatch: err => {
-            console.log('响应失败拦截器')
             return err
         }
     },
 })
 
-const request = <T>(config: RequestConfig):Promise<AxiosResponse<T>> => {
+const request = <T>(config: RequestConfig): Promise<T> => {
     const { method = RequestEnum.POST } = config
     if (method.toUpperCase() === RequestEnum.GET) {
         config.params = config.data
     }
     config.method = method
-
-    return defaultRequest.request<T>(config)
+    return defaultRequest.instance.request(config)
 }
 
 export default request

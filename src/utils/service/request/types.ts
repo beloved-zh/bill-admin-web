@@ -14,8 +14,3 @@ export interface RequestInterceptors<T = any> {
     responseInterceptors?: (config: AxiosResponse<T>) => T
     responseInterceptorsCatch?: (err: any) => any
 }
-
-export interface CancelRequestSource {
-    [index: string]: () => void
-}
-

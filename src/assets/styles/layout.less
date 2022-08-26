@@ -1,0 +1,111 @@
+@import './base';
+@import 'variables.module';
+
+.app-layout{
+  width: 100%;
+  height: 100%;
+
+  .app-sidebar {
+    width: @sideBarWidth;
+    overflow: hidden;
+    overscroll-behavior: contain;
+
+    .sidebar-logo {
+      width: inherit;
+      height: @sideBarLogoContainerHeight;
+      background-color: @sideBarLogoContainerBg;
+      padding: 0 10px;
+      overflow: hidden;
+      img {
+        width: @sideBarLogoWidth;
+        height: @sideBarLogoHeight;
+      }
+      span {
+        margin-left: 10px;
+        font-weight: 700;
+        color: #ffffff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .scrollbar-wrapper {
+      height: calc(100% - @sideBarLogoContainerHeight);
+      overflow-x: hidden !important;
+
+    }
+  }
+
+  .app-header:extend(.flex-column-center) {
+    width: 100%;
+    padding: 0;
+    background-color: #ffffff;
+
+    .navbar:extend(.flex-row-center) {
+      width: inherit;
+      height: 50px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+      justify-content: space-between;
+
+      .left-content:extend(.flex-row-center) {
+        .sidebar-control {
+          padding: 0 15px;
+        }
+      }
+      .right-content:extend(.flex-row-center) {
+        .item {
+          padding-right: 15px;
+        }
+        span {
+          color: #606266;
+        }
+      }
+    }
+
+    .tags-view {
+      height: 34px;
+      width: inherit;
+      background: #fff;
+      border-bottom: 1px solid #d8dce5;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+
+      .scroll-container {
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+        width: inherit;
+        height: inherit;
+        padding: 5px 0;
+      }
+
+      .tag {
+        height: 100%;
+        margin-left: 5px;
+        padding: 0 8px;
+        border: 1px solid #d8dce5;
+        border-radius: 5px;
+        background: #ffffff;
+        font-size: 12px;
+        line-height: 24px;
+
+        .close {
+          margin-left: 5px;
+        }
+      }
+
+      .tag-active:extend(.app-layout .app-header .tags-view .tag all) {
+        background: #409eff;
+        color: #ffffff;
+        border: none;
+      }
+
+    }
+  }
+}
+
+
+
+
