@@ -1,5 +1,5 @@
 <template>
-  用户管理
+  菜单管理
 </template>
 
 <script setup lang="ts">

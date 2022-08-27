@@ -33,7 +33,10 @@
     .scrollbar-wrapper {
       height: calc(100% - @sideBarLogoContainerHeight);
       overflow-x: hidden !important;
-
+      border-right: solid 1px var(--el-menu-border-color);
+      .app-sidebar-el-menu {
+        border-right: none;
+      }
     }
   }
 

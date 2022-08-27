@@ -1,18 +1,19 @@
 import { defineStore } from 'pinia'
 import type { UserState } from '../types/user'
-import type { LoginFormData } from '@api/auth/types'
+import type { LoginFormData, UserInfo } from '@api/auth/types'
 import { localStorage, sessionStorage } from '@/utils/storage'
-import { login } from '@/api/auth'
+import { login, getUserInfo } from '@/api/auth'
 import useAppStore from '../modules/app'
 
 const useUserStore = defineStore({
     id: 'user',
     state: (): UserState => ({
         token: localStorage.get(useAppStore().tokenHeader) || '',
-        nickname: '',
+        userName: '',
+        nickName: '',
+        sex: '',
         avatar: '',
-        roles: [],
-        perms: [],
+        roles: []
     }),
     getters: {},
     actions: {
@@ -36,6 +37,28 @@ const useUserStore = defineStore({
                     reject(error)
                 })
             })
+        },
+        getUserInfo() {
+            return new Promise<UserInfo>((resolve, reject) => {
+                getUserInfo()
+                    .then(data => {
+                        const { userName, nickName, sex, avatar, roles } = data
+                        this.userName = userName
+                        this.nickName = nickName
+                        this.sex = sex
+                        this.avatar = avatar
+                        this.roles = roles
+                        resolve(data)
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
+            })
+        },
+        resetToken() {
+            localStorage.remove(useAppStore().tokenHeader)
+            sessionStorage.remove(useAppStore().tokenHeader)
+            this.$reset()
         }
     }
 })

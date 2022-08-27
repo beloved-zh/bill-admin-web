@@ -8,25 +8,39 @@ import useStore from '@/store'
 // 白名单路由
 const whiteList = ['/login', '/auth-redirect'];
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     NProgress.start()
     console.log(from)
-    const { user } = useStore();
+    const { user, permission } = useStore();
     if (user.token) {
         if (to.path === '/login') {
             next({ path: '/' })
             NProgress.done()
         } else {
-            next();
-            NProgress.done();
+            if (user.userName) {
+                next()
+                NProgress.done()
+            } else {
+                try {
+                    await user.getUserInfo()
+                    permission.getRoutes()
+                    next()
+                    NProgress.done()
+                } catch (err) {
+                    // 移除 token 并跳转登录页
+                    await user.resetToken()
+                    next(`/login?redirect=${to.path}`)
+                    NProgress.done()
+                }
+            }
         }
     } else {
         // 未登录可以访问白名单页面(登录页面)
         if (whiteList.indexOf(to.path) !== -1) {
-            next();
+            next()
         } else {
-            next(`/login?redirect=${to.path}`);
-            NProgress.done();
+            next(`/login?redirect=${to.path}`)
+            NProgress.done()
         }
     }
 })

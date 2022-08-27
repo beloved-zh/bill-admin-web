@@ -25,3 +25,14 @@ export interface LoginResponseData {
     tokenPrefix: string;
     token: string;
 }
+
+/**
+ * 登录用户类型声明
+ */
+export interface UserInfo {
+    userName: string;
+    nickName: string;
+    sex: string;
+    avatar: string;
+    roles: string[];
+}

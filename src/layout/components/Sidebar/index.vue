@@ -9,30 +9,27 @@
           mode="vertical"
           :collapse="false"
           :unique-opened="false"
+          class="app-sidebar-el-menu"
+          router
       >
-        <el-sub-menu :index="i" v-for="i in 10">
-          <template #title>
-            <span>{{i}}</span>
-          </template>
-          <el-sub-menu :index="i+'-1'">
-            <template #title>
-              <span>{{ i }} - 1</span>
-            </template>
-            <el-menu-item :index="i+'-1-1'">
-              <span>{{ i }} - 1 - 1 -----------------------------------------------1</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-menu-item :index="i+'-2'">
-            <span>{{ i }} - 2</span>
-          </el-menu-item>
-        </el-sub-menu>
+        <template v-for="route in routes" :key="route.path">
+          <MenuTree :item="route" v-if="route.meta.hidden" :base-path="route.path" />
+        </template>
       </el-menu>
     </el-scrollbar>
   </el-aside>
 </template>
 
 <script setup lang="ts">
+  import type { RouteRecordRaw } from 'vue-router'
   import variables from '@assets/styles/variables.module.less'
+  import MenuTree from '@layout/components/Sidebar/components/MenuTree.vue'
+  import useStore from '@/store'
+
+  const { permission } = useStore()
+
+  const routes = computed<RouteRecordRaw[]>(() => permission.routes)
+
 </script>
 
 <style scoped lang="less">

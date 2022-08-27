@@ -6,7 +6,6 @@
 </template>
 
 <script setup lang="ts">
-  import Sidebar from '@layout/components/Sidebar/index.vue'
   import Navbar from '@layout/components/Header/components/Navbar.vue'
   import TagsView from '@layout/components/Header/components/TagsView.vue'
 </script>

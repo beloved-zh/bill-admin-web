@@ -1,7 +1,5 @@
-export interface UserState {
+import {UserInfo} from "@api/auth/types"
+
+export interface UserState extends UserInfo {
     token: string;
-    nickname: string;
-    avatar: string;
-    roles: string[];
-    perms: string[];
 }

@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "strictFunctionTypes": false,
     "jsx": "preserve",
-    "baseUrl": ".",
+    "baseUrl": "./",
     "allowJs": true,
     "sourceMap": true,
     "esModuleInterop": true,
@@ -19,7 +19,7 @@
     "experimentalDecorators": true,
     "lib": ["dom", "esnext"],
     "noImplicitAny": false,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "types": [
       "vite/client",
       "element-plus/global",

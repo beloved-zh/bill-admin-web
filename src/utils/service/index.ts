@@ -3,6 +3,7 @@ import type { AxiosResponse } from 'axios'
 import type { RequestConfig } from './request/types'
 import { RequestEnum, ContentTypeEnum } from '@enums/httpEnums'
 import { ElMessage } from 'element-plus'
+import useStore from '@/store'
 
 interface MyResponse<T = any> {
     code: number
@@ -19,6 +20,10 @@ const defaultRequest = new Request({
     interceptors: {
         // 请求拦截器
         requestInterceptors: (config: RequestConfig<MyResponse>) => {
+            const { app, user } = useStore();
+            if (user.token && config.headers) {
+                config.headers[app.tokenHeader] = user.token
+            }
             return config
         },
         requestInterceptorsCatch: err => {
