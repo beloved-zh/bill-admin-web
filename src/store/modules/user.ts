@@ -50,8 +50,8 @@ const useUserStore = defineStore({
                         this.roles = roles
                         resolve(data)
                     })
-                    .catch(error => {
-                        reject(error)
+                    .catch(err => {
+                        reject(err)
                     })
             })
         },

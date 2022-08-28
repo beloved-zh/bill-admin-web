@@ -1,3 +1,6 @@
+import type { Component } from 'vue'
+import type { RouteMeta, RouteRecordRaw } from 'vue-router'
+
 /**
  * 验证码类型声明
  */
@@ -35,4 +38,15 @@ export interface UserInfo {
     sex: string;
     avatar: string;
     roles: string[];
+}
+
+/**
+ * 菜单数据类型
+ */
+export interface RouteTree {
+    name: string;
+    path: string;
+    component: string | Component;
+    meta: RouteMeta;
+    children: RouteTree[] | RouteRecordRaw[]
 }

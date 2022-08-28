@@ -1,4 +1,5 @@
 import router from '@router/index'
+import type { RouteRecordRaw } from 'vue-router'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -8,9 +9,9 @@ import useStore from '@/store'
 // 白名单路由
 const whiteList = ['/login', '/auth-redirect'];
 
+// @ts-ignore 忽略 form 未使用提示
 router.beforeEach(async (to, from, next) => {
     NProgress.start()
-    console.log(from)
     const { user, permission } = useStore();
     if (user.token) {
         if (to.path === '/login') {
@@ -23,8 +24,9 @@ router.beforeEach(async (to, from, next) => {
             } else {
                 try {
                     await user.getUserInfo()
-                    permission.getRoutes()
-                    next()
+                    const asyncRoutes:RouteRecordRaw[] = await permission.getRoutes()
+                    asyncRoutes.forEach(route => router.addRoute(route))
+                    next({ ...to, replace: true })
                     NProgress.done()
                 } catch (err) {
                     // 移除 token 并跳转登录页
