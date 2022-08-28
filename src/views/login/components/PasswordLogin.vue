@@ -107,8 +107,8 @@
   })
 
   let loginForm = reactive<LoginFormData>({
-    username: '',
-    password: '',
+    username: 'admin',
+    password: '123456',
     code: '',
     uuid: ''
   })
@@ -150,6 +150,7 @@
   }
 
   onMounted(() => {
+    handleLogin(loginFormRef.value)
     handleCaptcha()
     Object.keys(route.query).map((key) => {
       console.log(key)

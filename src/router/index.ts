@@ -21,7 +21,19 @@ export const constantRoutes: Array<RouteRecordRaw> = [
           icon: 'github'
         }
       }
-    ]
+    ],
+    meta: {
+      hidden: false
+    }
+  },
+  {
+    path: '/test',
+    component: Layout,
+    meta: {
+      title: '测试单目录',
+      hidden: false,
+      icon: 'github'
+    }
   },
   {
     path: '/system',
@@ -49,15 +61,6 @@ export const constantRoutes: Array<RouteRecordRaw> = [
     ],
     meta: {
       title: '系统管理',
-      hidden: false,
-      icon: 'github'
-    }
-  },
-  {
-    path: '/test',
-    component: Layout,
-    meta: {
-      title: '测试单目录',
       hidden: false,
       icon: 'github'
     }

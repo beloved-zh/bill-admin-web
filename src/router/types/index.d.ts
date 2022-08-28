@@ -3,7 +3,7 @@ import 'vue-router'
 // 扩展 RouteMeta 类型
 declare module 'vue-router' {
     interface RouteMeta {
-        title: string,
+        title?: string,
         icon?: string,
         hidden?: boolean
     }

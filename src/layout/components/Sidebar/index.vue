@@ -6,14 +6,15 @@
     </el-link>
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
+          class="app-sidebar-el-menu"
           mode="vertical"
           :collapse="false"
-          :unique-opened="false"
-          class="app-sidebar-el-menu"
-          router
+          :unique-opened="true"
+          :default-active="activeMenu"
+          :router="true"
       >
-        <template v-for="route in routes" :key="route.path">
-          <MenuTree :item="route" v-if="route.meta.hidden" :base-path="route.path" />
+        <template v-for="(route,index) in routes" :key="route.path + '-' + index">
+          <TreeItem v-if="route.meta && !route.meta.hidden" :route="route" :base-path="route.path" />
         </template>
       </el-menu>
     </el-scrollbar>
@@ -23,13 +24,18 @@
 <script setup lang="ts">
   import type { RouteRecordRaw } from 'vue-router'
   import variables from '@assets/styles/variables.module.less'
-  import MenuTree from '@layout/components/Sidebar/components/MenuTree.vue'
+  import TreeItem from '@layout/components/Sidebar/components/TreeItem.vue'
   import useStore from '@/store'
+  import { useRoute } from 'vue-router'
+
+  const route = useRoute()
+  console.log(route.path)
 
   const { permission } = useStore()
 
   const routes = computed<RouteRecordRaw[]>(() => permission.routes)
 
+  const activeMenu = computed(() => route.path)
 </script>
 
 <style scoped lang="less">
