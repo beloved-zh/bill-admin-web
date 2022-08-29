@@ -85,21 +85,28 @@
       }
 
       .tag {
-        height: 100%;
+        display: inline-block;
+        text-decoration: none;
+        height: inherit;
         margin-left: 5px;
         padding: 0 8px;
         border: 1px solid #d8dce5;
         border-radius: 5px;
         background: #ffffff;
+        color: #000000;
         font-size: 12px;
         line-height: 24px;
+
+        &:hover {
+          //color: #409eff;
+        }
 
         .close {
           margin-left: 5px;
         }
       }
 
-      .tag-active:extend(.app-layout .app-header .tags-view .tag all) {
+      .tag-active {
         background: #409eff;
         color: #ffffff;
         border: none;

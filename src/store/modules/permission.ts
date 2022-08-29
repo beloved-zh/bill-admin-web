@@ -8,6 +8,7 @@ import { getRoutes } from '@/api/auth'
 const modules = import.meta.glob('../../views/**/**.vue');
 const Layout = () => import('@/layout/index.vue')
 const ParentView = () => import('@components/ParentView/index.vue')
+const errorPage = () => import('@views/error-page/404.vue')
 
 const generateAsyncRoutes = (routes: RouteTree[] | RouteRecordRaw[]): RouteRecordRaw[] => {
   return routes.map(route => {
@@ -20,8 +21,7 @@ const generateAsyncRoutes = (routes: RouteTree[] | RouteRecordRaw[]): RouteRecor
         route.component = ParentView
         break
       default:
-        // route.component = modules[`../../views/${route.component}/index.vue`] || import('@views/error-page/404.vue')
-        route.component = modules[`../../views/${route.component}/index.vue`] || modules[`../../views/error-page/404.vue`]
+        route.component = modules[`../../views/${route.component}/index.vue`] || errorPage
     }
 
     if (route.children) {
@@ -32,7 +32,7 @@ const generateAsyncRoutes = (routes: RouteTree[] | RouteRecordRaw[]): RouteRecor
   })
 }
 
-const permissionStore = defineStore({
+const usePermissionStore = defineStore({
   id: 'permission',
   state: (): PermissionState => ({
     routes: [],
@@ -60,4 +60,4 @@ const permissionStore = defineStore({
   }
 })
 
-export default permissionStore
+export default usePermissionStore

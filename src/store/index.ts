@@ -1,11 +1,13 @@
 import useUserStore from './modules/user'
 import useAppStore from './modules/app'
-import permissionStore from './modules/permission'
+import usePermissionStore from './modules/permission'
+import useTagsViewStore from './modules/tagsView'
 
 const useStore = () => ({
     app: useAppStore(),
     user: useUserStore(),
-    permission: permissionStore()
-});
+    permission: usePermissionStore(),
+    tagsView: useTagsViewStore(),
+})
 
-export default useStore;
+export default useStore
