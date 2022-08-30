@@ -1,12 +1,12 @@
 <template>
   <el-header height="85px" class="app-header">
-    <Navbar/>
+    <NavBar/>
     <TagsView/>
   </el-header>
 </template>
 
 <script setup lang="ts">
-  import Navbar from '@layout/components/Header/components/Navbar/index.vue'
+  import NavBar from '@layout/components/Header/components/NavBar/index.vue'
   import TagsView from '@layout/components/Header/components/TagsView/index.vue'
 </script>
 

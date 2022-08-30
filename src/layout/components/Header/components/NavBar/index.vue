@@ -5,9 +5,9 @@
         <svg-icon name="shousuo" size="20px" />
       </div>
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+        <template v-for="item in breadcrumbArray" :key="item.path">
+          <el-breadcrumb-item :to="item.path">{{ item.meta.title }}</el-breadcrumb-item>
+        </template>
       </el-breadcrumb>
     </div>
     <div class="right-content">
@@ -33,7 +33,21 @@
 </template>
 
 <script setup lang="ts">
-import SvgIcon from '@components/SvgIcon/index.vue'
+  import SvgIcon from '@components/SvgIcon/index.vue'
+  import type { RouteLocationMatched } from 'vue-router'
+  import { useRoute } from 'vue-router'
+
+  const route = useRoute()
+
+  let breadcrumbArray = ref<RouteLocationMatched[]>([])
+
+  watch(route, () => {
+    breadcrumbArray.value = route.matched.filter(item => {
+      return item.meta && item.meta.title
+    })
+  }, {
+    immediate: true
+  })
 </script>
 
 <style scoped lang="less">
