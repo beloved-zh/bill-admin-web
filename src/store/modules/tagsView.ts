@@ -21,6 +21,21 @@ const useTagsViewStore = defineStore({
             } else {
                 this.allViews.push(JSON.parse(JSON.stringify(view)))
             }
+        },
+        closeView(view: RouteLocationNormalizedLoaded) {
+            const deleteIndex = this.deleteAllViews(view)
+            return deleteIndex
+        },
+        deleteAllViews(view: RouteLocationNormalizedLoaded) {
+            let deleteIndex
+            for (let [index, item] of this.allViews.entries()) {
+                if (view.path === item.path) {
+                    this.allViews.splice(index, 1)
+                    deleteIndex = index
+                    break
+                }
+            }
+            return deleteIndex
         }
     }
 })
