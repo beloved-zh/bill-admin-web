@@ -15,10 +15,10 @@
         <svg-icon name="sousuo" size="20px" />
       </div>
       <div class="item">
-        <svg-icon name="baitianmoshi" size="20px" />
+        <svg-icon @click="toggleDark1" :name="isDark ? 'yueliang' : 'baitianmoshi'" size="20px" />
       </div>
       <div class="item">
-        <svg-icon name="quanping" size="20px" />
+        <svg-icon @click="toggle" :name="isFullscreen ? 'huanyuanhuabu': 'quanping'" size="20px" />
       </div>
       <div class="item">
         <svg-icon name="bianji" size="22px" />
@@ -36,8 +36,18 @@
   import SvgIcon from '@components/SvgIcon/index.vue'
   import type { RouteLocationMatched } from 'vue-router'
   import { useRoute } from 'vue-router'
+  import { useDark, useToggle , useFullscreen } from '@vueuse/core'
+
+  const isDark = useDark()
+  const toggleDark = useToggle(isDark)
+  const { isFullscreen, toggle } = useFullscreen()
 
   const route = useRoute()
+  console.log(isDark.value)
+  const toggleDark1 = () => {
+    console.log(isDark.value)
+    toggleDark()
+  }
 
   let breadcrumbArray = ref<RouteLocationMatched[]>([])
 

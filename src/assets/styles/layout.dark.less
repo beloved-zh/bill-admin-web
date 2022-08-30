@@ -1,0 +1,35 @@
+@import './base';
+@import 'variables.module';
+
+html.dark {
+  .app-layout {
+
+    .app-header {
+      background-color: #121212;
+
+      .navbar {
+        background-color: #121212;
+      }
+
+      .tags-view {
+        background: #121212;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+
+        .tag {
+          background: #ffffff;
+          color: #000000;
+        }
+
+        .tag-active:extend(.app-layout .app-header .tags-view .tag all) {
+          background: #409eff;
+          color: #ffffff;
+        }
+
+      }
+    }
+  }
+}
+
+
+
+

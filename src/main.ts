@@ -4,6 +4,8 @@ import 'virtual:svg-icons-register'
 import '@assets/styles/index.less'
 // element-plus样式
 import 'element-plus/theme-chalk/index.css'
+// element-plus夜间模式样式
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 // iconfont
 import '@assets/icons/iconfont/iconfont.js'
