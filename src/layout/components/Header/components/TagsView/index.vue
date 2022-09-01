@@ -1,12 +1,12 @@
 <template>
-  <div class="tags-view">
+  <div class="tags-view" ref="tagsViewRef">
     <el-scrollbar class="scroll-container" ref="scrollbarRef" @wheel.native.prevent="handleScroll">
       <template v-for="view in allViews" :key="view.path">
         <router-link
             ref="tagRefs"
             :class="isActive(view) ? 'tag-active' : 'tag'"
             :to="view.path"
-            @contextmenu.prevent="openMenu(view)"
+            @contextmenu.prevent="openMenu(view, $event)"
         >
           {{ view.meta.title }}
           <span class="close" @click.prevent.stop="closeSelectedTag(view)">
@@ -15,12 +15,26 @@
         </router-link>
       </template>
     </el-scrollbar>
+    <RightKeyMenu
+        :offset="-10"
+        v-model="showMenu"
+        :clikeEvent="openMenuEvent"
+        :parent-el="tagsViewRef">
+      <ul class="menu-main">
+        <li>关闭</li>
+        <li>关闭全部</li>
+        <li>关闭其它</li>
+      </ul>
+    </RightKeyMenu>
   </div>
+
 </template>
 
 <script setup lang="ts">
 import SvgIcon from '@components/SvgIcon/index.vue'
+import RightKeyMenu from '@components/RightKeyMenu/index.vue'
 import type { RouteLocationNormalizedLoaded, useLink } from 'vue-router'
+import type { ElScrollbar } from 'element-plus'
 import { useRoute, useRouter} from 'vue-router'
 import useStore from '@/store'
 
@@ -29,8 +43,8 @@ const route = useRoute()
 
 const { tagsView } = useStore()
 
-let scrollbarRef = ref()
-let tagMenuRef = ref()
+let tagsViewRef = ref<HTMLDivElement>()
+let scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 // @ts-ignore vue-router 将 RouterLink 的内部行为作为一个组合式API (useLink) 函数公开
 let tagRefs = ref<InstanceType<typeof useLink>[]>([])
 
@@ -45,9 +59,13 @@ watch(route, () => {
 
 const allViews = computed<RouteLocationNormalizedLoaded[]>(() => tagsView.allViews)
 
+let showMenu = ref(false)
+let openMenuEvent = ref<MouseEvent>()
+
 // 右键菜单
-const openMenu = (view:RouteLocationNormalizedLoaded) => {
-  console.log('右键', view)
+const openMenu = (view:RouteLocationNormalizedLoaded, e: MouseEvent) => {
+  openMenuEvent.value = e
+  showMenu.value = true
 }
 
 // 关闭选中标签
@@ -60,6 +78,7 @@ const closeSelectedTag = (view:RouteLocationNormalizedLoaded) => {
   }
 }
 
+// 跳转最近标签
 const toLatelyTag = (index) => {
   if (!index && index !== 0) return
 
@@ -86,6 +105,9 @@ const isActive = (view:RouteLocationNormalizedLoaded) => {
 // 移动到当前标签
 function moveToCurrentTag() {
   nextTick(() => {
+    if (!scrollbarRef.value || !scrollbarRef.value.wrap$) {
+      return
+    }
     let wrap = scrollbarRef.value.wrap$
     // 容器偏移量
     const scrollLeft = wrap.scrollLeft
@@ -132,6 +154,9 @@ function moveToCurrentTag() {
 
 // 重写滚动事件，滚轮横向滚动
 const handleScroll = (e:WheelEvent) => {
+  if (!scrollbarRef.value || !scrollbarRef.value.wrap$) {
+    return
+  }
   let wrap = scrollbarRef.value.wrap$
   wrap.scrollLeft = wrap.scrollLeft + e.deltaY
 }
@@ -145,5 +170,39 @@ const handleScroll = (e:WheelEvent) => {
 
 :deep(.el-scrollbar__view) {
   height: 100%;
+}
+
+.menu-main {
+  list-style: none;
+  margin: 0 8px;
+  padding: 0;
+
+  width: 100px;
+  font-size: 12px;
+  line-height: 28px;
+  text-align: left;
+  color: #444040;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  white-space: nowrap;
+  z-index: 1000;
+}
+.menu-main:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.menu-main li {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px;
+}
+.menu-main li:hover {
+  cursor: pointer;
+  background: #66b1ff;
+  border-color: #66b1ff;
+  color: #fff;
 }
 </style>
