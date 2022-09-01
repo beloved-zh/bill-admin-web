@@ -8,9 +8,15 @@ const useAppStore = defineStore({
     state: (): AppState => ({
         autoLogin: true,
         tokenHeader: localStorage.get('tokenHeader') || 'Authorization',
+        sidebar: {
+            open: true
+        }
     }),
     getters: {},
     actions: {
+        toggleSidebar () {
+            this.sidebar.open = !this.sidebar.open
+        },
         setTokenHeader (header) {
             localStorage.set('tokenHeader', header)
             this.tokenHeader = header

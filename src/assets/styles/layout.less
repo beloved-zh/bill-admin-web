@@ -6,9 +6,14 @@
   height: 100%;
 
   .app-sidebar {
-    width: @sideBarWidth;
+    max-width: @sideBarWidth;
+    min-width: @sideBarShrinkWidth;
     overflow: hidden;
     overscroll-behavior: contain;
+    transition: width 0.25s;
+    -webkit-transition: width 0.25s;
+    -moz-transition: width 0.25s;
+    -o-transition: width 0.25s;
 
     .sidebar-logo {
       width: inherit;
@@ -16,11 +21,11 @@
       background-color: @sideBarLogoContainerBg;
       padding: 0 10px;
       overflow: hidden;
-      img {
+      .logo-img {
         width: @sideBarLogoWidth;
         height: @sideBarLogoHeight;
       }
-      span {
+      .logo-title {
         margin-left: 10px;
         font-weight: 700;
         color: #ffffff;
@@ -36,6 +41,11 @@
       border-right: solid 1px var(--el-menu-border-color);
       .app-sidebar-el-menu {
         border-right: none;
+        transition: all 10ms;
+
+        .icon {
+          margin-right: 10px;
+        }
       }
     }
   }

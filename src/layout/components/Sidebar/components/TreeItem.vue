@@ -1,25 +1,32 @@
 <template>
   <el-menu-item v-if="showMenuItem" :index="resolvePath(showItem.path)">
-    {{showItem.meta.title}}
+    <svg-icon :class="{icon: open}" v-if="showItem.meta.icon" :name="showItem.meta.icon" size="20px" />
+    <template #title>
+
+      <span>{{showItem.meta.title}}</span>
+    </template>
   </el-menu-item>
   <el-sub-menu v-else :index="resolvePath(route.path)">
     <template #title>
+      <svg-icon :class="{icon: open}" v-if="route.meta.icon" :name="route.meta.icon" size="20px" />
       <span>{{route.meta.title}}</span>
     </template>
     <template v-for="item in route.children" :key="resolvePath(item.path)">
-      <TreeItem v-if="item.meta && !item.meta.hidden" :route="item" :base-path="resolvePath(route.path)" />
+      <TreeItem v-if="item.meta && !item.meta.hidden" :route="item" :base-path="resolvePath(route.path)" :open="open" />
     </template>
   </el-sub-menu>
 
 </template>
 
 <script setup lang="ts">
+  import SvgIcon from '@components/SvgIcon/index.vue'
   import path from 'path-browserify'
   import type { RouteRecordRaw } from 'vue-router'
 
   const props = defineProps<{
     route: RouteRecordRaw,
-    basePath: string
+    basePath: string,
+    open: boolean
   }>()
 
   const showItem = ref<RouteRecordRaw>()

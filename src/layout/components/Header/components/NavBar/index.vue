@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="left-content">
       <div class="sidebar-control">
-        <svg-icon name="shousuo" size="20px" />
+        <svg-icon :name="sidebar.open ? 'shousuo' : 'zhankai'" size="20px" @click="toggleSidebar" />
       </div>
       <el-breadcrumb separator="/">
         <template v-for="item in breadcrumbArray" :key="item.path">
@@ -15,7 +15,7 @@
         <svg-icon name="sousuo" size="20px" />
       </div>
       <div class="item">
-        <svg-icon @click="toggleDark1" :name="isDark ? 'yueliang' : 'baitianmoshi'" size="20px" />
+        <svg-icon @click="toggleDark" :name="isDark ? 'yueliang' : 'baitianmoshi'" size="20px" />
       </div>
       <div class="item">
         <svg-icon @click="toggle" :name="isFullscreen ? 'huanyuanhuabu': 'quanping'" size="20px" />
@@ -37,17 +37,25 @@
   import type { RouteLocationMatched } from 'vue-router'
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
-
-  const isDark = useDark()
-  const toggleDark = useToggle(isDark)
-  const { isFullscreen, toggle } = useFullscreen()
+  import useStore from '@/store'
 
   const route = useRoute()
-  console.log(isDark.value)
-  const toggleDark1 = () => {
-    console.log(isDark.value)
-    toggleDark()
+
+  const isDark = useDark()
+
+  const toggleDark = () => {
+    useToggle(isDark)
   }
+
+  const { isFullscreen, toggle } = useFullscreen()
+
+  const { app } = useStore()
+
+  const toggleSidebar = () => {
+    app.toggleSidebar()
+  }
+  
+  const sidebar = computed(() => app.sidebar)
 
   let breadcrumbArray = ref<RouteLocationMatched[]>([])
 
