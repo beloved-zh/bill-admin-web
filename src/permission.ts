@@ -4,7 +4,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-import useStore from '@/store'
+import useStore from '@store/index'
 
 // 白名单路由
 const whiteList = ['/login', '/auth-redirect'];

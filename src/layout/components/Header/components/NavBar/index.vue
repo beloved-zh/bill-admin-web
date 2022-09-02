@@ -37,7 +37,7 @@
   import type { RouteLocationMatched } from 'vue-router'
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
-  import useStore from '@/store'
+  import useStore from '@store/index'
 
   const route = useRoute()
 

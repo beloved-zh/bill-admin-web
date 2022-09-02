@@ -9,8 +9,11 @@
             @contextmenu.prevent="openMenu(view, $event)"
         >
           {{ view.meta.title }}
-          <span class="close" @click.prevent.stop="closeSelectedTag(view)">
+          <span class="close" v-if="allViews.length > 1 && !view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
             <SvgIcon name="guanbi" size="10px" />
+          </span>
+          <span class="close" v-else>
+            <SvgIcon name="tudingguding" size="10px" />
           </span>
         </router-link>
       </template>
@@ -21,9 +24,12 @@
         :clikeEvent="openMenuEvent"
         :parent-el="tagsViewRef">
       <ul class="menu-main">
+        <li>刷新</li>
         <li>关闭</li>
-        <li>关闭全部</li>
+        <li>关闭左侧</li>
+        <li>关闭右侧</li>
         <li>关闭其它</li>
+        <li>关闭所有</li>
       </ul>
     </RightKeyMenu>
   </div>
@@ -33,15 +39,17 @@
 <script setup lang="ts">
 import SvgIcon from '@components/SvgIcon/index.vue'
 import RightKeyMenu from '@components/RightKeyMenu/index.vue'
-import type { RouteLocationNormalizedLoaded, useLink } from 'vue-router'
+import type { RouteRecordRaw, useLink } from 'vue-router'
+import type { TagView } from '@store/types/tagsView'
 import type { ElScrollbar } from 'element-plus'
 import { useRoute, useRouter} from 'vue-router'
-import useStore from '@/store'
+import useStore from '@store/index'
+import path from 'path-browserify'
 
 const router = useRouter()
 const route = useRoute()
 
-const { tagsView } = useStore()
+const { permission, tagsView } = useStore()
 
 let tagsViewRef = ref<HTMLDivElement>()
 let scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
@@ -57,19 +65,30 @@ watch(route, () => {
   immediate: true
 })
 
-const allViews = computed<RouteLocationNormalizedLoaded[]>(() => tagsView.allViews)
+const allViews = computed<TagView[]>(() => tagsView.allViews)
+const routes = computed<RouteRecordRaw[]>(() => permission.routes)
 
+let rightClickSelectedTag = ref<TagView>()
 let showMenu = ref(false)
 let openMenuEvent = ref<MouseEvent>()
 
-// 右键菜单
-const openMenu = (view:RouteLocationNormalizedLoaded, e: MouseEvent) => {
+// 打开右键菜单
+const openMenu = (view:TagView, e: MouseEvent) => {
   openMenuEvent.value = e
   showMenu.value = true
+
+  rightClickSelectedTag.value = view
+}
+
+const closeOtherTags = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+  router.push(rightClickSelectedTag.value.path as string)
 }
 
 // 关闭选中标签
-const closeSelectedTag = (view:RouteLocationNormalizedLoaded) => {
+const closeSelectedTag = (view:TagView) => {
   const deleteIndex = tagsView.closeView(view)
 
   // 关闭激活标签视图进行跳转
@@ -84,13 +103,13 @@ const toLatelyTag = (index) => {
 
   let prevTag = allViews.value[index - 1]
   if (prevTag) {
-    router.push(prevTag.path)
+    router.push(prevTag.path as string)
     return
   }
 
   let nextTag = allViews.value[index === 0 ? index : index + 1]
   if (nextTag) {
-    router.push(nextTag.path)
+    router.push(nextTag.path as string)
     return
   }
 
@@ -98,7 +117,7 @@ const toLatelyTag = (index) => {
 }
 
 // 是否是激活标签
-const isActive = (view:RouteLocationNormalizedLoaded) => {
+const isActive = (view:TagView) => {
   return route.path === view.path
 }
 
@@ -160,6 +179,35 @@ const handleScroll = (e:WheelEvent) => {
   let wrap = scrollbarRef.value.wrap$
   wrap.scrollLeft = wrap.scrollLeft + e.deltaY
 }
+
+const getFixedTags = (routes: RouteRecordRaw[], basePath = '/') => {
+  let tags: TagView[] = []
+  routes.forEach(item => {
+    if (item.children) {
+      tags = tags.concat(getFixedTags(item.children, item.path))
+    }
+
+    if (item.meta && item.meta.fixed) {
+      item.path = path.resolve(basePath, item.path)
+      tags.push(item)
+    }
+  })
+  return tags
+}
+
+const initTags = () => {
+  const fixedTags = getFixedTags(routes.value)
+
+  // 对固定标签进行倒叙添加
+  // 正序会将后面的标签添加在前面
+  fixedTags.reverse().forEach(item => {
+    tagsView.addView(item)
+  })
+}
+
+onMounted(() => {
+  initTags()
+})
 </script>
 
 <style scoped lang="less">

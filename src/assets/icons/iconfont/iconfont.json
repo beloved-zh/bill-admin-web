@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "399200",
+      "name": "图钉，固定",
+      "font_class": "tudingguding",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "5638792",
+      "name": "固定",
+      "font_class": "guding",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "15973786",
+      "name": "固定",
+      "font_class": "guding1",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
       "icon_id": "145438",
       "name": "搜索",
       "font_class": "sousuo",

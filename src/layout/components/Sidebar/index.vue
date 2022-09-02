@@ -15,7 +15,7 @@
           :collapse-transition="false"
       >
         <template v-for="(route,index) in routes" :key="route.path + '-' + index">
-          <TreeItem v-if="route.meta && !route.meta.hidden" :route="route" :base-path="route.path" :open="sidebar.open" />
+          <tree-item v-if="route.meta && !route.meta.hidden" :route="route" :base-path="route.path" :open="sidebar.open" />
         </template>
       </el-menu>
     </el-scrollbar>
@@ -25,8 +25,8 @@
 <script setup lang="ts">
   import type { RouteRecordRaw } from 'vue-router'
   import variables from '@assets/styles/variables.module.less'
-  import TreeItem from '@layout/components/Sidebar/components/TreeItem.vue'
-  import useStore from '@/store'
+  import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
+  import useStore from '@store/index'
   import { useRoute } from 'vue-router'
 
   const route = useRoute()
