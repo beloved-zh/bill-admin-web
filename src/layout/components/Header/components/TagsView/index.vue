@@ -1,7 +1,7 @@
 <template>
   <div class="tags-view" ref="tagsViewRef">
     <el-scrollbar class="scroll-container" ref="scrollbarRef" @wheel.native.prevent="handleScroll">
-      <template v-for="view in allViews" :key="view.path">
+      <template v-for="view in tagViews" :key="view.path">
         <router-link
             ref="tagRefs"
             :class="isActive(view) ? 'tag-active' : 'tag'"
@@ -9,7 +9,7 @@
             @contextmenu.prevent="openMenu(view, $event)"
         >
           {{ view.meta.title }}
-          <span class="close" v-if="allViews.length > 1 && !view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
+          <span class="close" v-if="tagViews.length > 1 && !view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
             <SvgIcon name="guanbi" size="10px" />
           </span>
           <span class="close" v-else>
@@ -24,12 +24,12 @@
         :clikeEvent="openMenuEvent"
         :parent-el="tagsViewRef">
       <ul class="menu-main">
-        <li>刷新</li>
-        <li>关闭</li>
-        <li>关闭左侧</li>
-        <li>关闭右侧</li>
-        <li>关闭其它</li>
-        <li>关闭所有</li>
+        <li @click="refreshSelectedTag">刷新</li>
+        <li v-if="!isFixed" @click="closeSelectedTag(rightClickSelectedTag)">关闭</li>
+        <li v-if="!isFirstView" @click="closeLeftTags">关闭左侧</li>
+        <li v-if="!isLastView" @click="closeRightTags">关闭右侧</li>
+        <li v-if="tagViews.length > 1" @click="closeOtherTags">关闭其它</li>
+        <li v-if="tagViews.length > 1" @click="closeAllTags">关闭所有</li>
       </ul>
     </RightKeyMenu>
   </div>
@@ -65,10 +65,95 @@ watch(route, () => {
   immediate: true
 })
 
-const allViews = computed<TagView[]>(() => tagsView.allViews)
+const tagViews = computed<TagView[]>(() => tagsView.tagViews)
 const routes = computed<RouteRecordRaw[]>(() => permission.routes)
 
 let rightClickSelectedTag = ref<TagView>()
+
+const isFixed = computed<boolean>(() => {
+  if (!rightClickSelectedTag.value) {
+    return false
+  }
+  if (rightClickSelectedTag.value.meta && rightClickSelectedTag.value.meta.fixed) {
+    return true
+  }
+  return false
+})
+
+const isFirstView = computed<boolean>(() => {
+  if (!rightClickSelectedTag.value || tagViews.value.length === 0) {
+    return false
+  }
+  if (rightClickSelectedTag.value.path === tagViews.value[0].path) {
+    return true
+  }
+  return false
+})
+
+const isLastView = computed<boolean>(() => {
+  if (!rightClickSelectedTag.value || tagViews.value.length === 0) {
+    return false
+  }
+  if (rightClickSelectedTag.value.path === tagViews.value[tagViews.value.length - 1].path) {
+    return true
+  }
+  return false
+})
+
+// 刷新 todo 需要更新 cachedViews 数据
+const refreshSelectedTag = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+
+  router.replace(rightClickSelectedTag.value.path as string)
+}
+
+// 关闭左边标签
+const closeLeftTags = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+  tagsView.closeLeftViews(rightClickSelectedTag.value)
+
+  router.push(rightClickSelectedTag.value.path as string)
+}
+
+// 关闭右边标签
+const closeRightTags = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+  tagsView.closeRightViews(rightClickSelectedTag.value)
+
+  router.push(rightClickSelectedTag.value.path as string)
+}
+
+// 关闭其它标签
+const closeOtherTags = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+  tagsView.closeOtherViews(rightClickSelectedTag.value)
+
+  router.push(rightClickSelectedTag.value.path as string)
+}
+
+// 关闭所有标签
+const closeAllTags = () => {
+  if (!rightClickSelectedTag.value) {
+    return
+  }
+
+  tagsView.closeAllViews()
+
+  if (tagViews.value.length > 0) {
+    router.push(tagViews.value[tagViews.value.length - 1].path as string)
+  } else {
+    router.push("/")
+  }
+}
+
 let showMenu = ref(false)
 let openMenuEvent = ref<MouseEvent>()
 
@@ -78,13 +163,6 @@ const openMenu = (view:TagView, e: MouseEvent) => {
   showMenu.value = true
 
   rightClickSelectedTag.value = view
-}
-
-const closeOtherTags = () => {
-  if (!rightClickSelectedTag.value) {
-    return
-  }
-  router.push(rightClickSelectedTag.value.path as string)
 }
 
 // 关闭选中标签
@@ -101,13 +179,13 @@ const closeSelectedTag = (view:TagView) => {
 const toLatelyTag = (index) => {
   if (!index && index !== 0) return
 
-  let prevTag = allViews.value[index - 1]
+  let prevTag = tagViews.value[index - 1]
   if (prevTag) {
     router.push(prevTag.path as string)
     return
   }
 
-  let nextTag = allViews.value[index === 0 ? index : index + 1]
+  let nextTag = tagViews.value[index === 0 ? index : index + 1]
   if (nextTag) {
     router.push(nextTag.path as string)
     return
@@ -136,10 +214,10 @@ function moveToCurrentTag() {
     let prevTag;
     let nextTag;
 
-    const indexOf = allViews.value.findIndex(item => item.path === route.path);
+    const indexOf = tagViews.value.findIndex(item => item.path === route.path);
 
-    prevTag = allViews.value[indexOf - 1]
-    nextTag = allViews.value[indexOf + 1]
+    prevTag = tagViews.value[indexOf - 1]
+    nextTag = tagViews.value[indexOf + 1]
 
     let prevTagOffsetLeft = 0
     let currentTagOffsetLeft = 0
@@ -180,6 +258,7 @@ const handleScroll = (e:WheelEvent) => {
   wrap.scrollLeft = wrap.scrollLeft + e.deltaY
 }
 
+// 获取固定标签
 const getFixedTags = (routes: RouteRecordRaw[], basePath = '/') => {
   let tags: TagView[] = []
   routes.forEach(item => {

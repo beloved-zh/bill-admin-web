@@ -6,6 +6,7 @@ declare module 'vue-router' {
         title?: string,
         icon?: string,
         hidden?: boolean,
-        fixed?: boolean
+        fixed?: boolean,
+        keepAlive?: boolean
     }
 }

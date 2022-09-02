@@ -4,37 +4,95 @@ import type { TagsViewState, TagView } from '../types/tagsView'
 const useTagsViewStore = defineStore({
     id: 'tagsView',
     state: (): TagsViewState => ({
-        allViews: [],
+        tagViews: [],
         cachedViews: []
     }),
     getters: {},
     actions: {
         addView(view: TagView) {
-            this.addAllViews(view)
-        },
-        addAllViews(view: TagView) {
             // 已经存在不添加
-            if(this.allViews.some(item => item.path === view.path)) return
+            if(this.tagViews.some(item => item.path === view.path)) return
             if (view.meta && view.meta.fixed) {
-                this.allViews.unshift(JSON.parse(JSON.stringify(view)))
+                this.tagViews.unshift(JSON.parse(JSON.stringify(view)))
             } else {
-                this.allViews.push(JSON.parse(JSON.stringify(view)))
+                this.tagViews.push(JSON.parse(JSON.stringify(view)))
+            }
+
+            if(this.cachedViews.some(item => item.path === view.path)) return
+            if (view.meta && view.meta.keepAlive) {
+                this.cachedViews.push(JSON.parse(JSON.stringify(view)))
             }
         },
         closeView(view: TagView) {
-            const deleteIndex = this.deleteAllViews(view)
+            let deleteIndex
+            let deleteItem
+
+            this.tagViews = this.tagViews.filter((item, index) => {
+                if (item.path === view.path) {
+                    deleteIndex = index
+                    deleteItem = item
+                    return false
+                }
+                return true
+            })
+
+            if (deleteItem) {
+                this.cachedViews = this.cachedViews.filter(item => item.path !== deleteItem.path)
+            }
+
             return deleteIndex
         },
-        deleteAllViews(view: TagView) {
-            let deleteIndex
-            for (let [index, item] of this.allViews.entries()) {
-                if (view.path === item.path) {
-                    this.allViews.splice(index, 1)
-                    deleteIndex = index
-                    break
-                }
+        closeLeftViews(view: TagView) {
+            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
+            if (currIndex === -1) {
+                return
             }
-            return deleteIndex
+
+            this.tagViews = this.tagViews.filter((item, index) => {
+                if (index >= currIndex || item.meta?.fixed) {
+                    return true
+                }
+                this.cachedViews = this.cachedViews.filter(cachedItem => {
+                    return item.path !== cachedItem.path
+                })
+
+                return false
+            })
+        },
+        closeRightViews(view: TagView) {
+            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
+            if (currIndex === -1) {
+                return
+            }
+
+            this.tagViews = this.tagViews.filter((item, index) => {
+                if (index <= currIndex || item.meta?.fixed) {
+                    return true
+                }
+                this.cachedViews = this.cachedViews.filter(cachedItem => {
+                    return item.path !== cachedItem.path
+                })
+
+                return false
+            })
+        },
+        closeOtherViews(view: TagView) {
+            this.tagViews = this.tagViews.filter(item => {
+                return item.meta?.fixed || item.path === view.path
+            })
+
+            this.cachedViews = this.cachedViews.filter(item => {
+                return item.meta?.fixed || item.path === view.path
+            })
+        },
+        closeAllViews() {
+            this.tagViews = this.tagViews.filter(item => {
+                return item.meta?.fixed
+            })
+
+            this.cachedViews = this.cachedViews.filter(item => {
+                return item.meta?.fixed
+            })
         }
     }
 })

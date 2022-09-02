@@ -1,6 +1,6 @@
 <template>
   <div class="main" @contextmenu.prevent="openMenu($event)" ref="mainRef">
-
+    <h1>首页</h1>
     <RightKeyMenu v-model="show" :clikeEvent="clikeEvent" :offset="-10" :auto-close="true" :parent-el="parentEl">
       <ul class="menu-main">
         <li>关闭</li>
