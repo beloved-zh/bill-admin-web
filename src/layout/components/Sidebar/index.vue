@@ -14,8 +14,8 @@
           :router="true"
           :collapse-transition="false"
       >
-        <template v-for="(route,index) in routes" :key="route.path + '-' + index">
-          <tree-item v-if="route.meta && !route.meta.hidden" :route="route" :base-path="route.path" :open="sidebar.open" />
+        <template v-for="menu in menus" :key="menu.path">
+          <tree-item v-if="!menu.meta.hidden" :menu-item="menu" :base-path="resolvePath(menu.path)" :open="sidebar.open" />
         </template>
       </el-menu>
     </el-scrollbar>
@@ -23,20 +23,26 @@
 </template>
 
 <script setup lang="ts">
-  import type { RouteRecordRaw } from 'vue-router'
   import variables from '@assets/styles/variables.module.less'
   import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
   import useStore from '@store/index'
   import { useRoute } from 'vue-router'
+  import { MenuTree } from '@api/auth/types'
+  import path from 'path-browserify'
 
   const route = useRoute()
 
-  const { app, permission } = useStore()
+  const { app, menu } = useStore()
 
-  const routes = computed<RouteRecordRaw[]>(() => permission.routes)
+  const menus = computed<MenuTree[]>(() => menu.menus)
   const sidebar = computed(() => app.sidebar)
 
   const activeMenu = computed(() => route.path)
+
+  const resolvePath = (basePath: string): string => {
+    return path.resolve('/', basePath)
+  }
+
 </script>
 
 <style scoped lang="less">

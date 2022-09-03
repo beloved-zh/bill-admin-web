@@ -4,7 +4,14 @@
     <el-container direction="vertical">
       <Header/>
       <el-main style="background-color: #fefefe">
-        <router-view></router-view>
+<!--        <router-view></router-view>-->
+        <router-view>
+          <template #default="{ Component, route }">
+            <keep-alive>
+              <component :is="Component" :key="route.fullPath" />
+            </keep-alive>
+          </template>
+        </router-view>
       </el-main>
     </el-container>
   </el-container>

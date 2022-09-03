@@ -5,8 +5,8 @@
         <svg-icon :name="sidebar.open ? 'shousuo' : 'zhankai'" size="20px" @click="toggleSidebar" />
       </div>
       <el-breadcrumb separator="/">
-        <template v-for="item in breadcrumbArray" :key="item.path">
-          <el-breadcrumb-item :to="item.path">{{ item.meta.title }}</el-breadcrumb-item>
+        <template v-for="item in breadcrumbArray">
+          <el-breadcrumb-item>{{ item }}</el-breadcrumb-item>
         </template>
       </el-breadcrumb>
     </div>
@@ -57,12 +57,13 @@
   
   const sidebar = computed(() => app.sidebar)
 
-  let breadcrumbArray = ref<RouteLocationMatched[]>([])
+  let breadcrumbArray = ref<string[]>([])
 
   watch(route, () => {
-    breadcrumbArray.value = route.matched.filter(item => {
-      return item.meta && item.meta.title
-    })
+    // breadcrumbArray.value = route.matched.filter(item => {
+    //   return item.meta && item.meta.title
+    // })
+    breadcrumbArray.value = route.meta.breadcrumbs as string[]
   }, {
     immediate: true
   })

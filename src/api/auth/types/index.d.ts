@@ -1,5 +1,4 @@
-import type { Component } from 'vue'
-import type { RouteMeta, RouteRecordRaw } from 'vue-router'
+import type { RouteMeta } from 'vue-router'
 
 /**
  * 验证码类型声明
@@ -43,10 +42,10 @@ export interface UserInfo {
 /**
  * 菜单数据类型
  */
-export interface RouteTree {
+export interface MenuTree {
     name: string;
     path: string;
-    component: string | Component;
+    component: string | null;
     meta: RouteMeta;
-    children: RouteTree[] | RouteRecordRaw[]
+    children: MenuTree[]
 }

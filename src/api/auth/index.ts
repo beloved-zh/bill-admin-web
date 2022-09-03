@@ -1,6 +1,6 @@
 import request from '@utils/service'
-import type { Captcha, LoginFormData, LoginResponseData, UserInfo, RouteTree } from './types/index'
-import {RequestEnum} from "@enums/httpEnums"
+import { RequestEnum } from '@enums/httpEnums'
+import type { Captcha, LoginFormData, LoginResponseData, UserInfo, MenuTree } from './types/index'
 
 export const getCaptcha = (): Promise<Captcha> => {
     return request({
@@ -23,8 +23,8 @@ export const getUserInfo = (): Promise<UserInfo> => {
     })
 }
 
-export const getRoutes = (): Promise<RouteTree[]> => {
+export const getMenuTree = (): Promise<MenuTree[]> => {
     return request({
-        url: '/auth/getRoutes'
+        url: '/auth/getMenuTree'
     })
 }

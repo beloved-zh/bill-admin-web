@@ -1,17 +1,17 @@
 <template>
-  <el-menu-item v-if="showMenuItem" :index="resolvePath(showItem.path)">
+  <el-menu-item v-if="showMenuItem" :index="basePath">
     <svg-icon :class="{icon: open}" v-if="showItem.meta.icon" :name="showItem.meta.icon" size="20px" />
     <template #title>
       <span>{{showItem.meta.title}}</span>
     </template>
   </el-menu-item>
-  <el-sub-menu v-else :index="resolvePath(route.path)">
+  <el-sub-menu v-else :index="basePath">
     <template #title>
-      <svg-icon :class="{icon: open}" v-if="route.meta.icon" :name="route.meta.icon" size="20px" />
-      <span>{{route.meta.title}}</span>
+      <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="20px" />
+      <span>{{menuItem.meta.title}}</span>
     </template>
-    <template v-for="item in route.children" :key="resolvePath(item.path)">
-      <tree-item v-if="item.meta && !item.meta.hidden" :route="item" :base-path="resolvePath(route.path)" :open="open" />
+    <template v-for="item in menuItem.children" :key="resolvePath(item.path)">
+      <tree-item v-if="!item.meta.hidden" :menu-item="item" :base-path="resolvePath(item.path)" :open="open" />
     </template>
   </el-sub-menu>
 
@@ -20,29 +20,29 @@
 <script setup lang="ts">
   import SvgIcon from '@components/SvgIcon/index.vue'
   import path from 'path-browserify'
-  import type { RouteRecordRaw } from 'vue-router'
   import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
+  import { MenuTree } from '@api/auth/types'
 
   const props = defineProps<{
-    route: RouteRecordRaw,
+    menuItem: MenuTree,
     basePath: string,
     open: boolean
   }>()
 
-  const showItem = ref<RouteRecordRaw>()
+  const showItem = ref<MenuTree>()
 
   const showMenuItem = computed(() => {
-    const route = props.route
+    const menuItem = props.menuItem
 
     // 没有子项 显示菜单
-    if (!route.children || route.children.length === 0) {
-      showItem.value = route
+    if (!menuItem.children || menuItem.children.length === 0) {
+      showItem.value = menuItem
       return true
     }
 
     // 查询当前所有显示的菜单项
-    const showingChildren =  route.children.filter(item => {
-      if (item.meta && item.meta.hidden) {
+    const showingChildren =  menuItem.children.filter(item => {
+      if (item.meta.hidden) {
         return false
       } else {
         return true
@@ -51,7 +51,7 @@
 
     // 只有唯一子项 且自己没有 title 显示菜单否则显示目录
     if (showingChildren.length === 1) {
-      if (route.meta && route.meta.title) {
+      if (menuItem.meta && menuItem.meta.title) {
         return false
       }
       showItem.value = showingChildren[0]

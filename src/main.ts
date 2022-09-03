@@ -8,7 +8,6 @@ import 'element-plus/theme-chalk/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 // animated 动画库
 import 'animate.css'
-
 // iconfont
 import '@assets/icons/iconfont/iconfont.js'
 
@@ -16,14 +15,10 @@ import router from '@router/index'
 // pinia
 import pinia from '@pinia/pinia'
 
-import './permission'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
-
-
 
 app.use(pinia)
 app.use(router)

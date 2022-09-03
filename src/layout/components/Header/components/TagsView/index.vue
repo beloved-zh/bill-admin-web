@@ -49,7 +49,7 @@ import path from 'path-browserify'
 const router = useRouter()
 const route = useRoute()
 
-const { permission, tagsView } = useStore()
+const { menu, tagsView } = useStore()
 
 let tagsViewRef = ref<HTMLDivElement>()
 let scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
@@ -66,7 +66,7 @@ watch(route, () => {
 })
 
 const tagViews = computed<TagView[]>(() => tagsView.tagViews)
-const routes = computed<RouteRecordRaw[]>(() => permission.routes)
+const routes = computed<RouteRecordRaw[]>(() => menu.routes)
 
 let rightClickSelectedTag = ref<TagView>()
 

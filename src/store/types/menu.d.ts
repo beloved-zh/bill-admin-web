@@ -1,6 +1,8 @@
+import type { MenuTree } from '@api/auth/types'
 import type { RouteRecordRaw } from 'vue-router'
 
-export interface PermissionState {
+export interface MenuState {
+    menus: MenuTree[];
     routes: RouteRecordRaw[];
     addRoutes: RouteRecordRaw[];
 }
