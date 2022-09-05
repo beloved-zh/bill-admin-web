@@ -5,6 +5,10 @@
 
 <script setup lang="ts" name="LEVEL-2-2-1">
   let val = ref('')
+
+  onMounted(() => {
+    console.log('加载完成')
+  })
 </script>
 
 <style scoped lang="less">

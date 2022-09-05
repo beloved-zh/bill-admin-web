@@ -1,8 +1,8 @@
 <template>
-  <el-menu-item v-if="showMenuItem" :index="basePath">
-    <svg-icon :class="{icon: open}" v-if="showItem.meta.icon" :name="showItem.meta.icon" size="20px" />
+  <el-menu-item v-if="!menuItem.children || menuItem.children.length === 0" :index="basePath">
+    <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="20px" />
     <template #title>
-      <span>{{showItem.meta.title}}</span>
+      <span>{{menuItem.meta.title}}</span>
     </template>
   </el-menu-item>
   <el-sub-menu v-else :index="basePath">
@@ -28,38 +28,6 @@
     basePath: string,
     open: boolean
   }>()
-
-  const showItem = ref<MenuTree>()
-
-  const showMenuItem = computed(() => {
-    const menuItem = props.menuItem
-
-    // 没有子项 显示菜单
-    if (!menuItem.children || menuItem.children.length === 0) {
-      showItem.value = menuItem
-      return true
-    }
-
-    // 查询当前所有显示的菜单项
-    const showingChildren =  menuItem.children.filter(item => {
-      if (item.meta.hidden) {
-        return false
-      } else {
-        return true
-      }
-    })
-
-    // 只有唯一子项 且自己没有 title 显示菜单否则显示目录
-    if (showingChildren.length === 1) {
-      if (menuItem.meta && menuItem.meta.title) {
-        return false
-      }
-      showItem.value = showingChildren[0]
-      return true
-    }
-
-    return false
-  })
 
   const resolvePath = (routePath: string) => {
     return path.resolve(props.basePath, routePath)

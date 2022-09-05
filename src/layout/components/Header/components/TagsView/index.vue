@@ -9,7 +9,7 @@
             @contextmenu.prevent="openMenu(view, $event)"
         >
           {{ view.meta.title }}
-          <span class="close" v-if="tagViews.length > 1 && !view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
+          <span class="close" v-if="!view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
             <SvgIcon name="guanbi" size="10px" />
           </span>
           <span class="close" v-else>
@@ -100,13 +100,13 @@ const isLastView = computed<boolean>(() => {
   return false
 })
 
-// 刷新 todo 需要更新 cachedViews 数据
+// 刷新
 const refreshSelectedTag = () => {
   if (!rightClickSelectedTag.value) {
     return
   }
 
-  router.replace(rightClickSelectedTag.value.path as string)
+  tagsView.refreshView(rightClickSelectedTag.value)
 }
 
 // 关闭左边标签

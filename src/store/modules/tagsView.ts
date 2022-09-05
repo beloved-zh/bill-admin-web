@@ -15,7 +15,26 @@ const useTagsViewStore = defineStore({
         }
     },
     actions: {
+        getViewKey(path: string) {
+            const currIndex = this.tagViews.findIndex(item => item.path === path)
+            if (currIndex === -1) {
+                return
+            }
+
+            return this.tagViews[currIndex].key
+        },
+        // 利用router-view component key 值变化会导致内容刷新来实现页面强制刷新
+        refreshView(view: TagView) {
+            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
+            if (currIndex === -1) {
+                return
+            }
+
+            this.tagViews[currIndex].key = Date.now()
+        },
         addView(view: TagView) {
+            view.key = Date.now()
+
             // 已经存在不添加
             if(this.tagViews.some(item => item.path === view.path)) return
             if (view.meta && view.meta.fixed) {
