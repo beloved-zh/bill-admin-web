@@ -40,12 +40,13 @@ const formatRoutes = (menuTrees: MenuTree[], basePath = '/', breadcrumbs:string[
                 name: item.name,
                 meta: {
                     ...item.meta,
-                    breadcrumbs: breadcrumbs
+                    breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs))
                 },
                 component: modules[`../../views/${item.component}/index.vue`] || errorPage,
             })
+
         }
-        breadcrumbs = []
+        breadcrumbs.pop()
     })
 
     return routes
