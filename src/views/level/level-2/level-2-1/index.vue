@@ -2,12 +2,8 @@
   <h1>level/level-2/level-2-1</h1>
   <input type="text" v-model="val">
 </template>
-<script lang="ts">
-export default {
-  name: 'LEVEL-2-1'
-}
-</script>
-<script setup lang="ts">
+
+<script setup lang="ts" name="LEVEL-2-1">
   let val = ref('')
 </script>
 
