@@ -7,7 +7,13 @@ const useTagsViewStore = defineStore({
         tagViews: [],
         cachedViews: []
     }),
-    getters: {},
+    getters: {
+        cachedNames: (state):string[] => {
+            return state.cachedViews.map(item => {
+                return item.name as string
+            })
+        }
+    },
     actions: {
         addView(view: TagView) {
             // 已经存在不添加

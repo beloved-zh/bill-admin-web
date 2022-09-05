@@ -12,13 +12,12 @@ const generateAsyncRoute = (menuTrees: MenuTree[]): RouteRecordRaw[] => {
 
     const children = formatRoutes(menuTrees)
 
-    // 后续添加404匹配路由
     const addRoutes:RouteRecordRaw[] = [
         {
             path: '/',
             component: Layout,
             children: children,
-            redirect: children[0].path
+            redirect: children[0]?.path
         },
         {
             path: '/:path(.*)*',

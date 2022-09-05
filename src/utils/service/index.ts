@@ -1,6 +1,6 @@
 import Request from './request'
 import type { AxiosResponse } from 'axios'
-import type { RequestConfig } from './request/types'
+import type { RequestConfig } from './types'
 import { RequestEnum, ContentTypeEnum } from '@enums/httpEnums'
 import { ElMessage } from 'element-plus'
 import useStore from '@/store'
@@ -13,7 +13,7 @@ interface MyResponse<T = any> {
 
 const defaultRequest = new Request({
     baseURL: import.meta.env.VITE_APP_BASE_API,
-    timeout: 1000 * 60 * 5,
+    timeout: 1000 * 3,
     headers: {
         'Content-Type': ContentTypeEnum.JSON
     },
@@ -45,7 +45,7 @@ const defaultRequest = new Request({
         responseInterceptorsCatch: err => {
             return err
         }
-    },
+    }
 })
 
 const request = <T>(config: RequestConfig): Promise<T> => {
