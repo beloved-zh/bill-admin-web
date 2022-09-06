@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3505787 */
-  src: url('iconfont.woff2?t=1662080671374') format('woff2'),
-       url('iconfont.woff?t=1662080671374') format('woff'),
-       url('iconfont.ttf?t=1662080671374') format('truetype'),
-       url('iconfont.svg?t=1662080671374#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1662446028976') format('woff2'),
+       url('iconfont.woff?t=1662446028976') format('woff'),
+       url('iconfont.ttf?t=1662446028976') format('truetype'),
+       url('iconfont.svg?t=1662446028976#iconfont') format('svg');
 }
 
 .iconfont {
@@ -14,51 +14,43 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-tudingguding:before {
+.icon-cancel-full-screen:before {
+  content: "\eb98";
+}
+
+.icon-full-screen:before {
+  content: "\eb99";
+}
+
+.icon-setup:before {
+  content: "\e646";
+}
+
+.icon-white:before {
+  content: "\e632";
+}
+
+.icon-night:before {
+  content: "\e633";
+}
+
+.icon-fixed:before {
   content: "\e63f";
 }
 
-.icon-guding:before {
-  content: "\e614";
-}
-
-.icon-guding1:before {
-  content: "\e618";
-}
-
-.icon-sousuo:before {
+.icon-search:before {
   content: "\e62f";
 }
 
-.icon-yueliang:before {
-  content: "\e631";
-}
-
-.icon-baitianmoshi:before {
-  content: "\e769";
-}
-
-.icon-bianji:before {
-  content: "\eb61";
-}
-
-.icon-guanbi:before {
+.icon-close:before {
   content: "\eb6a";
 }
 
-.icon-huanyuanhuabu:before {
-  content: "\ec13";
-}
-
-.icon-quanping:before {
-  content: "\ec14";
-}
-
-.icon-zhankai:before {
+.icon-unfold:before {
   content: "\e602";
 }
 
-.icon-shousuo:before {
+.icon-shrink:before {
   content: "\e60a";
 }
 
@@ -92,10 +84,6 @@
 
 .icon-dashboard:before {
   content: "\e78d";
-}
-
-.icon-setting:before {
-  content: "\e78f";
 }
 
 .icon-user:before {

@@ -10,10 +10,10 @@
         >
           {{ view.meta.title }}
           <span class="close" v-if="!view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
-            <SvgIcon name="guanbi" size="10px" />
+            <SvgIcon name="close" size="10px" />
           </span>
           <span class="close" v-else>
-            <SvgIcon name="tudingguding" size="10px" />
+            <SvgIcon name="fixed" size="10px" />
           </span>
         </router-link>
       </template>

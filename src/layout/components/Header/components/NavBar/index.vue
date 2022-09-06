@@ -1,32 +1,19 @@
 <template>
   <div class="navbar">
     <div class="left-content">
-      <div class="sidebar-control">
-        <svg-icon :name="sidebar.open ? 'shousuo' : 'zhankai'" size="20px" @click="toggleSidebar" />
-      </div>
+      <svg-icon class="sidebar-control cursor-pointer" :name="sidebar.open ? 'shrink' : 'unfold'" size="small" @click="toggleSidebar" />
       <el-breadcrumb separator="/">
-        <template v-for="item in breadcrumbArray">
+        <template v-for="item in breadcrumbs">
           <el-breadcrumb-item>{{ item }}</el-breadcrumb-item>
         </template>
       </el-breadcrumb>
     </div>
     <div class="right-content">
-      <div class="item">
-        <svg-icon name="sousuo" size="20px" />
-      </div>
-      <div class="item">
-        <svg-icon @click="toggleDark" :name="isDark ? 'yueliang' : 'baitianmoshi'" size="20px" />
-      </div>
-      <div class="item">
-        <svg-icon @click="toggle" :name="isFullscreen ? 'huanyuanhuabu': 'quanping'" size="20px" />
-      </div>
-      <div class="item">
-        <svg-icon name="bianji" size="22px" />
-      </div>
-      <div class="item">
-        <el-avatar :size="30" src="https://joeschmoe.io/api/v1/random" />
-      </div>
-      <span class="item">admin</span>
+      <svg-icon class="item cursor-pointer" name="search" size="small" />
+      <svg-icon class="item cursor-pointer" @click="toggleDark" :name="isDark ? 'night' : 'white'" size="small" />
+      <svg-icon class="item cursor-pointer" @click="toggle" :name="isFullscreen ? 'cancel-full-screen': 'full-screen'" size="small" />
+      <svg-icon class="item cursor-pointer" name="setup" size="small" />
+      <el-avatar class="item cursor-pointer" :size="30" src="https://joeschmoe.io/api/v1/random" >admin</el-avatar>
     </div>
   </div>
 
@@ -34,7 +21,6 @@
 
 <script setup lang="ts">
   import SvgIcon from '@components/SvgIcon/index.vue'
-  import type { RouteLocationMatched } from 'vue-router'
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
   import useStore from '@store/index'
@@ -57,20 +43,17 @@
   
   const sidebar = computed(() => app.sidebar)
 
-  let breadcrumbArray = ref<string[]>([])
+  let breadcrumbs = ref<string[]>([])
 
   watch(route, () => {
-    // breadcrumbArray.value = route.matched.filter(item => {
-    //   return item.meta && item.meta.title
-    // })
-    breadcrumbArray.value = route.meta.breadcrumbs as string[]
+    breadcrumbs.value = route.meta.breadcrumbs as string[]
   }, {
     immediate: true
   })
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/index.less');
+  @import url('@assets/styles/base.less');
   .navbar {
     &:extend(.flex-row-center);
     justify-content: space-between;
@@ -82,13 +65,13 @@
     .left-content {
       &:extend(.flex-row-center);
       .sidebar-control {
-        padding: 0 14px;
+        margin: 0 14px;
       }
     }
     .right-content {
       &:extend(.flex-row-center);
       .item {
-        padding-right: 14px;
+        margin-right: 14px;
       }
       span {
         color: #606266;
