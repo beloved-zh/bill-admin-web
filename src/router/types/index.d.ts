@@ -8,6 +8,7 @@ declare module 'vue-router' {
         hidden?: boolean,
         fixed?: boolean,
         keepAlive?: boolean,
-        breadcrumbs?: string[]
+        breadcrumbs?: string[],
+        iframe?: string
     }
 }

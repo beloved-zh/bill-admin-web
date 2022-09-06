@@ -24,7 +24,7 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (user.userName) {
+      if (user.hasInfo) {
         next()
         NProgress.done()
       } else {

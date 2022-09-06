@@ -1,5 +1,6 @@
 import {UserInfo} from "@api/auth/types"
 
-export interface UserState extends UserInfo {
+export interface UserState {
     token: string;
+    userInfo: UserInfo;
 }

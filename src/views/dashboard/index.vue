@@ -1,6 +1,8 @@
 <template>
   <div class="main" @contextmenu.prevent="openMenu($event)" ref="mainRef">
-    <h1>首页</h1>
+    <template v-for="i in 100">
+      <div>首页</div>
+    </template>
     <RightKeyMenu v-model="show" :clikeEvent="clikeEvent" :offset="-10" :auto-close="true" :parent-el="parentEl">
       <ul class="menu-main">
         <li>关闭</li>
@@ -40,9 +42,8 @@
 <style scoped lang="less">
   .main {
     width: 100%;
-    height: 100%;
-    max-height: 100%;
-    position: relative
+    position: relative;
+    background-color: #0077aa;
   }
   .menu-main {
     list-style: none;

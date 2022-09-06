@@ -5,17 +5,34 @@ import { localStorage, sessionStorage } from '@/utils/storage'
 import { login, getUserInfo } from '@/api/auth'
 import useAppStore from '../modules/app'
 
+const DEFAULT_AVATAR:string = 'https://joeschmoe.io/api/v1/random'
+
 const useUserStore = defineStore({
     id: 'user',
     state: (): UserState => ({
         token: localStorage.get(useAppStore().tokenHeader) || '',
-        userName: '',
-        nickName: '',
-        sex: '',
-        avatar: '',
-        roles: []
+        userInfo: {
+            userName: '',
+            nickName: '',
+            sex: '',
+            avatar: '',
+            roles: []
+        }
     }),
-    getters: {},
+    getters: {
+        hasInfo: (state):boolean => {
+            if (state.userInfo.userName) {
+                return true
+            }
+            return false
+        },
+        roles: (state):string[] => {
+            return state.userInfo.roles
+        },
+        avatar: (state):string => {
+            return state.userInfo.avatar || DEFAULT_AVATAR
+        }
+    },
     actions: {
         login (loginData: LoginFormData) {
             const app = useAppStore()
@@ -42,12 +59,7 @@ const useUserStore = defineStore({
             return new Promise<UserInfo>((resolve, reject) => {
                 getUserInfo()
                     .then(data => {
-                        const { userName, nickName, sex, avatar, roles } = data
-                        this.userName = userName
-                        this.nickName = nickName
-                        this.sex = sex
-                        this.avatar = avatar
-                        this.roles = roles
+                        this.userInfo = data
                         resolve(data)
                     })
                     .catch(err => {

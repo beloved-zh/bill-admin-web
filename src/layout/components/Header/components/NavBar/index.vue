@@ -13,7 +13,7 @@
       <svg-icon class="item cursor-pointer" @click="toggleDark" :name="isDark ? 'night' : 'white'" size="small" />
       <svg-icon class="item cursor-pointer" @click="toggle" :name="isFullscreen ? 'cancel-full-screen': 'full-screen'" size="small" />
       <svg-icon class="item cursor-pointer" name="setup" size="small" />
-      <el-avatar class="item cursor-pointer" :size="30" src="https://joeschmoe.io/api/v1/random" >admin</el-avatar>
+      <el-avatar class="item cursor-pointer" :size="30" :src="avatar" />
     </div>
   </div>
 
@@ -24,6 +24,7 @@
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
   import useStore from '@store/index'
+  import {TagView} from "@store/types/tagsView";
 
   const route = useRoute()
 
@@ -35,13 +36,15 @@
 
   const { isFullscreen, toggle } = useFullscreen()
 
-  const { app } = useStore()
+  const { app, user } = useStore()
 
   const toggleSidebar = () => {
     app.toggleSidebar()
   }
   
   const sidebar = computed(() => app.sidebar)
+
+  const avatar = computed<string>(() => user.avatar)
 
   let breadcrumbs = ref<string[]>([])
 

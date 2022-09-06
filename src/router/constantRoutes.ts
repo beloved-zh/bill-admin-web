@@ -5,6 +5,8 @@ const Layout = () => import('@/layout/index.vue')
 
 const errorPage = () => import('@views/error-page/404.vue')
 
+const iframePage = () => import('@views/iframe/index.vue')
+
 // 白名单路由
 const whiteList = ['/login']
 
@@ -18,6 +20,7 @@ const constantRoutes: RouteRecordRaw[] = [
 export {
     Layout,
     errorPage,
+    iframePage,
     whiteList,
     constantRoutes
 }

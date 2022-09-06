@@ -45,7 +45,7 @@
   import type { ElScrollbar } from 'element-plus'
   import { useRoute, useRouter} from 'vue-router'
   import useStore from '@store/index'
-  import path from 'path-browserify'
+  import { resolvePath } from '@utils/index'
 
   const router = useRouter()
   const route = useRoute()
@@ -268,7 +268,7 @@
       }
 
       if (item.meta && item.meta.fixed) {
-        item.path = path.resolve(basePath, item.path)
+        item.path = resolvePath(basePath, item.path)
         tags.push(item)
       }
     })

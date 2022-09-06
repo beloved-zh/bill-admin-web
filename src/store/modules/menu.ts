@@ -3,8 +3,8 @@ import type { MenuTree } from '@api/auth/types'
 import type { MenuState } from '../types/menu'
 import type { RouteRecordRaw } from 'vue-router'
 import { getMenuTree } from '@/api/auth'
-import {Layout, errorPage, constantRoutes } from '@router/constantRoutes'
-import path from 'path-browserify'
+import {Layout, errorPage, iframePage, constantRoutes } from '@router/constantRoutes'
+import { isExternalLink, resolvePath } from '@utils/index'
 
 const modules = import.meta.glob('../../views/**/**.vue')
 
@@ -33,18 +33,21 @@ const formatRoutes = (menuTrees: MenuTree[], basePath = '/', breadcrumbs:string[
     menuTrees.forEach(item => {
         breadcrumbs.push(item.meta.title as string)
         if (item.children && item.children.length > 0) {
-            routes = routes.concat(formatRoutes(item.children, path.resolve(basePath, item.path), breadcrumbs))
+            routes = routes.concat(formatRoutes(item.children, resolvePath(basePath, item.path), breadcrumbs))
         } else {
-            routes.push({
-                path: path.resolve(basePath, item.path),
-                name: item.name,
-                meta: {
-                    ...item.meta,
-                    breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs))
-                },
-                component: modules[`../../views/${item.component}/index.vue`] || errorPage,
-            })
-
+            // 新建标签页菜单不注册路由
+            if (!isExternalLink(item.path)) {
+                routes.push({
+                    path: resolvePath(basePath, item.path),
+                    name: item.name,
+                    meta: {
+                        ...item.meta,
+                        breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs))
+                    },
+                    // 内嵌 iframe 路由
+                    component: item.meta.iframe && isExternalLink(item.meta.iframe) ? iframePage : modules[`../../views/${item.component}/index.vue`] || errorPage,
+                })
+            }
         }
         breadcrumbs.pop()
     })

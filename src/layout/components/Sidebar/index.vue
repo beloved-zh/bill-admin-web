@@ -11,11 +11,10 @@
           :collapse="!sidebar.open"
           :unique-opened="true"
           :default-active="activeMenu"
-          :router="true"
           :collapse-transition="false"
       >
         <template v-for="menu in menus" :key="menu.path">
-          <tree-item v-if="!menu.meta.hidden" :menu-item="menu" :base-path="resolvePath(menu.path)" :open="sidebar.open" />
+          <tree-item v-if="!menu.meta.hidden" :menu-item="menu" :base-path="resolveBasePath(menu.path)" :open="sidebar.open" />
         </template>
       </el-menu>
     </el-scrollbar>
@@ -28,7 +27,7 @@
   import useStore from '@store/index'
   import { useRoute } from 'vue-router'
   import { MenuTree } from '@api/auth/types'
-  import path from 'path-browserify'
+  import { resolveBasePath } from '@utils/index'
 
   const route = useRoute()
 
@@ -38,10 +37,6 @@
   const sidebar = computed(() => app.sidebar)
 
   const activeMenu = computed(() => route.path)
-
-  const resolvePath = (basePath: string): string => {
-    return path.resolve('/', basePath)
-  }
 
 </script>
 
@@ -85,8 +80,8 @@
       }
 
       :deep(.el-scrollbar__bar) {
-        width: 0!important;
-        height: 0!important;
+        width: 0;
+        height: 0;
       }
     }
   }
