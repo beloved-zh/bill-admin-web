@@ -1,11 +1,13 @@
 <template>
-  <router-view>
-    <template #default="{ Component, route }">
-      <keep-alive :include="includeRouteName">
-        <component :is="Component" :key="getKey(route)" />
-      </keep-alive>
-    </template>
-  </router-view>
+  <el-main>
+    <router-view>
+      <template #default="{ Component, route }">
+        <keep-alive :include="includeRouteName">
+          <component :is="Component" :key="getKey(route)" />
+        </keep-alive>
+      </template>
+    </router-view>
+  </el-main>
 </template>
 
 <script setup lang="ts">

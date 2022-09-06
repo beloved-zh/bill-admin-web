@@ -1,6 +1,6 @@
 <template>
   <el-menu-item v-if="!menuItem.children || menuItem.children.length === 0" :index="basePath">
-    <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="20px" />
+    <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="small" />
     <template #title>
       <span>{{menuItem.meta.title}}</span>
     </template>
@@ -36,5 +36,7 @@
 </script>
 
 <style scoped lang="less">
-
+  .icon {
+    margin-right: 10px;
+  }
 </style>

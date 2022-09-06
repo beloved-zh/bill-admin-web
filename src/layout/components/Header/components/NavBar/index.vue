@@ -70,4 +70,29 @@
 </script>
 
 <style scoped lang="less">
+  @import url('@assets/styles/index.less');
+  .navbar {
+    &:extend(.flex-row-center);
+    justify-content: space-between;
+    width: inherit;
+    height: 50px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+    .left-content {
+      &:extend(.flex-row-center);
+      .sidebar-control {
+        padding: 0 14px;
+      }
+    }
+    .right-content {
+      &:extend(.flex-row-center);
+      .item {
+        padding-right: 14px;
+      }
+      span {
+        color: #606266;
+      }
+    }
+  }
 </style>

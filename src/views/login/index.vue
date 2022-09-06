@@ -5,7 +5,7 @@
     </div>
     <div class="login-container">
       <div class="left-container">
-        <img class="w-10" src="/src/assets/images/login-banner.png">
+        <svg-icon name="svg-login-banner" size="100%" />
       </div>
       <div class="right-container">
         <el-tabs class="login-form" model-value="valid-code-login" stretch @tab-change="changeLogin">
@@ -16,7 +16,7 @@
             <PasswordLogin ref="passwordLogin" />
           </el-tab-pane>
         </el-tabs>
-        <el-divider content-position="center"><span class="divider">其他方式登录</span></el-divider>
+        <el-divider content-position="center" class="divider"><span class="divider">其他方式登录</span></el-divider>
         <div class="login-social">
           <div><svg-icon name="weixin" size="24px" color="#07c160" ></svg-icon></div>
           <div><svg-icon name="qq" size="24px" color="#50c8fd"></svg-icon></div>
@@ -30,10 +30,9 @@
 
 <script setup lang="ts">
   import type {TabPanelName} from 'element-plus'
-
   import SvgIcon from '@components/SvgIcon/index.vue'
-  import ValidCodeLogin from './components/ValidCodeLogin.vue'
-  import PasswordLogin from './components/PasswordLogin.vue'
+  import ValidCodeLogin from './components/ValidCodeLogin/index.vue'
+  import PasswordLogin from './components/PasswordLogin/index.vue'
 
   let passwordLogin =  ref<InstanceType<typeof PasswordLogin> | null>(null)
 
@@ -46,7 +45,8 @@
 
 <style scoped lang="less">
   @import url('@assets/styles/index.less');
-  .login-page:extend(.flex-column-center) {
+  .login-page {
+    &:extend(.flex-column-center);
     min-height: 100%;
     width: 100%;
     overflow: hidden;
@@ -54,26 +54,28 @@
       height: 60px;
       margin-bottom: 20px;
     }
-    .login-container:extend(.flex-row-center) {
-      background-color: #ffffff;
-      box-sizing: border-box;
-      box-shadow: var(--el-box-shadow);
-      border-radius: 10px;
-      .left-container:extend(.flex-column-center) {
+    .login-container {
+      &:extend(.flex-row-center);
+      &:extend(.box-shadow);
+      .left-container {
+        &:extend(.flex-column-center);
         width: 350px;
         padding: 15px;
       }
-      .right-container:extend(.flex-column-center) {
+      .right-container {
+        &:extend(.flex-column-center);
         padding: 20px 0;
         border-left: 1px solid #dcdfe6;
         .login-form {}
         .divider {
-          color: #dcdfe6
+          color: #dcdfe6;
         }
-        .login-social:extend(.flex-row-center) {
+        .login-social {
+          &:extend(.flex-row-center);
           width: 100%;
           justify-content: space-around;
-          div:extend(.flex-row-center) {
+          div {
+            &:extend(.flex-row-center);
             border: none;
             border-radius: 50%;
             line-height: inherit;
@@ -85,7 +87,6 @@
         }
       }
     }
-
   }
 
   .login-bg {

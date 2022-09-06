@@ -4,7 +4,7 @@
       <img class="logo-img" src="/src/assets/images/logo.png">
       <span class="logo-title" v-if="sidebar.open">LOGO</span>
     </el-link>
-    <el-scrollbar wrap-class="scrollbar-wrapper">
+    <el-scrollbar class="scrollbar" wrap-class="scrollbar-wrapper">
       <el-menu
           class="app-sidebar-el-menu"
           mode="vertical"
@@ -46,8 +46,48 @@
 </script>
 
 <style scoped lang="less">
-  :deep(.el-scrollbar__bar) {
-    width: 0!important;
-    height: 0!important;
+  .app-sidebar {
+    max-width: @sideBarWidth;
+    min-width: @sideBarShrinkWidth;
+    overflow: hidden;
+    overscroll-behavior: contain;
+
+    .sidebar-logo {
+      width: inherit;
+      height: @sideBarLogoContainerHeight;
+      background-color: @sideBarLogoContainerBg;
+      padding: 0 10px;
+      overflow: hidden;
+
+      .logo-img {
+        width: @sideBarLogoWidth;
+        height: @sideBarLogoHeight;
+      }
+      .logo-title {
+        margin-left: 10px;
+        font-weight: 700;
+        color: #ffffff;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .scrollbar {
+      :deep(.scrollbar-wrapper) {
+        height: calc(100% - @sideBarLogoContainerHeight);
+        overflow-x: hidden;
+        border-right: solid 1px #dcdfe6;
+        .app-sidebar-el-menu {
+          border-right: none;
+          transition: all 10ms;
+        }
+      }
+
+      :deep(.el-scrollbar__bar) {
+        width: 0!important;
+        height: 0!important;
+      }
+    }
   }
 </style>

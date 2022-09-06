@@ -46,9 +46,9 @@
 
 <script setup lang="ts">
 
-  let handleSMSCode = () => {
+let handleSMSCode = () => {
 
-  }
+}
 
 </script>
 

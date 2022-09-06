@@ -74,7 +74,7 @@
   import type { Captcha, LoginFormData } from '@api/auth/types'
   import type { FormInstance, FormRules } from 'element-plus'
   import { getCaptcha } from '@api/auth'
-  import useStore from '@/store'
+  import useStore from '@store/index'
   import { useRouter, useRoute } from 'vue-router'
 
   const { app, user } = useStore()
@@ -140,7 +140,6 @@
       }
       loginButLoading.value = true
       user.login(loginForm).then(res => {
-        console.log('登录成功')
         router.push({ path: routeParams.redirect || '/', query: routeParams.params });
       }).finally(() => {
         loginButLoading.value = false
@@ -153,7 +152,6 @@
     handleLogin(loginFormRef.value)
     handleCaptcha()
     Object.keys(route.query).map((key) => {
-      console.log(key)
       if (key === 'redirect') {
         routeParams.redirect = route.query[key] as string
       } else {

@@ -1,5 +1,5 @@
 <template>
-  <el-header height="85px" class="app-header">
+  <el-header class="app-header">
     <NavBar/>
     <TagsView/>
   </el-header>
@@ -11,4 +11,10 @@
 </script>
 
 <style scoped lang="less">
+  .app-header {
+    width: 100%;
+    height: 84px;
+    padding: 0;
+    background-color: #ffffff;
+  }
 </style>

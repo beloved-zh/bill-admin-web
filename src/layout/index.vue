@@ -1,11 +1,9 @@
 <template>
   <el-container direction="horizontal" class="app-layout">
-    <Sidebar/>
+    <Sidebar />
     <el-container direction="vertical">
-      <Header/>
-      <el-main style="background-color: #fefefe">
-        <AppMain/>
-      </el-main>
+      <Header />
+      <AppMain />
     </el-container>
   </el-container>
 </template>
@@ -17,4 +15,9 @@
 </script>
 
 <style scoped lang="less">
+
+  .app-layout {
+    width: 100%;
+    height: 100%;
+  }
 </style>

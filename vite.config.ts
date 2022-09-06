@@ -27,6 +27,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     },
     plugins: createVitePlugins(),
     css: {
+      // css预处理器
       preprocessorOptions: {
         less: {
           modifyVars: {
