@@ -23,7 +23,8 @@
   import { isExternalLink, resolvePath } from '@utils/index'
   import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
   import { MenuTree } from '@api/auth/types'
-  import { useRouter} from 'vue-router';
+  import { useRouter } from 'vue-router'
+  import useStore from '@store/index'
 
   const props = defineProps<{
     menuItem: MenuTree,
@@ -32,10 +33,22 @@
   }>()
 
   const router = useRouter()
+
+  const { app } = useStore()
   
   const handleMenuItemClick = (item:MenuItemRegistered) => {
     if (isExternalLink(item.index)) {
-      window.open(item.index)
+      if (app.confirmLeave) {
+        const routeData = router.resolve({
+          path: "/confirm-leave",
+          query: {
+            target: item.index
+          }
+        })
+        window.open(routeData.href)
+      } else {
+        window.open(item.index)
+      }
     } else {
       router.push(item.index)
     }

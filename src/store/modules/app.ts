@@ -7,6 +7,7 @@ const useAppStore = defineStore({
     id: 'app',
     state: (): AppState => ({
         autoLogin: true,
+        confirmLeave: true,
         tokenHeader: localStorage.get('tokenHeader') || 'Authorization',
         sidebar: {
             open: true

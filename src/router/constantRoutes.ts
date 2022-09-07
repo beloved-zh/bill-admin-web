@@ -14,6 +14,10 @@ const constantRoutes: RouteRecordRaw[] = [
     {
         path: '/login',
         component: () => import('@views/login/index.vue')
+    },
+    {
+        path: '/confirm-leave',
+        component: () => import('@views/confirm-leave/index.vue')
     }
 ]
 

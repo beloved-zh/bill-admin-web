@@ -166,7 +166,7 @@
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/index.less');
+  @import url('@assets/styles/base.less');
   .login-form {
     padding: 0 10px;
     width: 380px;

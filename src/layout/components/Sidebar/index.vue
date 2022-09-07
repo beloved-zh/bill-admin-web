@@ -41,11 +41,13 @@
 </script>
 
 <style scoped lang="less">
+
   .app-sidebar {
     max-width: @sideBarWidth;
     min-width: @sideBarShrinkWidth;
     overflow: hidden;
     overscroll-behavior: contain;
+    transition: width 0.2s linear;
 
     .sidebar-logo {
       width: inherit;
