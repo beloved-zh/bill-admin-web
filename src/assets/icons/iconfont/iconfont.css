@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3505787 */
-  src: url('iconfont.woff2?t=1662446028976') format('woff2'),
-       url('iconfont.woff?t=1662446028976') format('woff'),
-       url('iconfont.ttf?t=1662446028976') format('truetype'),
-       url('iconfont.svg?t=1662446028976#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1662701827130') format('woff2'),
+       url('iconfont.woff?t=1662701827130') format('woff'),
+       url('iconfont.ttf?t=1662701827130') format('truetype'),
+       url('iconfont.svg?t=1662701827130#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,38 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-export:before {
+  content: "\e65b";
+}
+
+.icon-upload:before {
+  content: "\e65c";
+}
+
+.icon-import:before {
+  content: "\e65d";
+}
+
+.icon-calendar:before {
+  content: "\e6e1";
+}
+
+.icon-down:before {
+  content: "\e601";
+}
+
+.icon-up:before {
+  content: "\e603";
+}
+
+.icon-search-form:before {
+  content: "\e86e";
+}
+
+.icon-reset:before {
+  content: "\e648";
 }
 
 .icon-cancel-full-screen:before {

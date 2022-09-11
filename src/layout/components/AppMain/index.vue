@@ -30,13 +30,13 @@
   .app-main {
     width: 100%;
     height: 100%;
-    padding: 8px;
-    background-color: #fbfbfb;
+    padding: 0;
+    background-color: #ffffff;
 
     :deep(.scrollbar-view) {
       height: 100%;
+      padding: 16px;
     }
   }
-
 
 </style>

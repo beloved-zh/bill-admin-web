@@ -4,6 +4,14 @@
   box-sizing: inherit;
 }
 
+:root {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+:root body {
+  position: absolute;
+}
+
 html {
   height: 100%;
   box-sizing: border-box;
@@ -13,6 +21,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100vw;
+  overflow: hidden;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -69,4 +79,20 @@ body {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.form-btn {
+  font-size: 12px;
+  svg {
+    width: 16px;
+    height: 16px;
+    font-size: 16px;
+  }
+}
+
+.form-svg-btn {
+  &:extend(.form-btn all);
+  svg {
+    margin-right: 5px;
+  }
 }

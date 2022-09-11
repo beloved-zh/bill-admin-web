@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10194303",
+      "name": "导出",
+      "font_class": "export",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "10194305",
+      "name": "上传",
+      "font_class": "upload",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "10194316",
+      "name": "导入",
+      "font_class": "import",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "8654653",
+      "name": "日历",
+      "font_class": "calendar",
+      "unicode": "e6e1",
+      "unicode_decimal": 59105
+    },
+    {
+      "icon_id": "14732",
+      "name": "向下",
+      "font_class": "down",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "14733",
+      "name": "向上",
+      "font_class": "up",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "2076190",
+      "name": "搜索",
+      "font_class": "search-form",
+      "unicode": "e86e",
+      "unicode_decimal": 59502
+    },
+    {
+      "icon_id": "6941976",
+      "name": "重置",
+      "font_class": "reset",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
       "icon_id": "5387942",
       "name": "取消全屏_o",
       "font_class": "cancel-full-screen",

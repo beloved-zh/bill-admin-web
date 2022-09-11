@@ -48,6 +48,8 @@
     overflow: hidden;
     overscroll-behavior: contain;
     transition: width 0.2s linear;
+    box-shadow: 1px 0px 3px 0 rgb(0 0 0 / 12%),0 0 3px 0 rgb(0 0 0 / 4%);
+    z-index: 1;
 
     .sidebar-logo {
       width: inherit;
