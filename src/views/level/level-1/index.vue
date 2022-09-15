@@ -3,7 +3,10 @@
   <input type="text" v-model="val">
 </template>
 
-<script setup lang="ts" name="LEVEL-1">
+<script setup lang="ts">
+  defineOptions({
+    name: 'LEVEL-1'
+  })
   let val = ref('')
 </script>
 

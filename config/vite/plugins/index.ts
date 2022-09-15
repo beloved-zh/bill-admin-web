@@ -5,7 +5,7 @@ import windiCSS from 'vite-plugin-windicss'
 import { AutoImportDeps } from './autoImport'
 import { AutoRegistryComponents } from './component'
 import { ConfigSvgIconsPlugin } from './svgIcons'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+import DefineOptions from 'unplugin-vue-define-options/vite'
 
 export function createVitePlugins() {
     const vitePlugins: (PluginOption | PluginOption[])[] = [
@@ -24,8 +24,8 @@ export function createVitePlugins() {
     // vite-plugin-svg-icons
     vitePlugins.push(ConfigSvgIconsPlugin())
 
-    // script 标签添加 name 属性
-    vitePlugins.push(vueSetupExtend())
+    // script 扩展
+    vitePlugins.push(DefineOptions())
 
     return vitePlugins;
 }

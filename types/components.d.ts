@@ -35,6 +35,7 @@ declare module '@vue/runtime-core' {
     RightKeyMenu: typeof import('./../src/components/RightKeyMenu/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SelectDictData: typeof import('./../src/components/SelectDictData/index.vue')['default']
     SvgIcon: typeof import('./../src/components/SvgIcon/index.vue')['default']
   }
 

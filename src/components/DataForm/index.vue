@@ -1,5 +1,6 @@
 <template>
-  <el-form ref="formRef" :model="formModel" :rules="rules" :label-width="labelWidth" inline >
+  <el-affix position="top" :offset="20">
+  <el-form ref="formRef" v-bind="attrs">
     <slot :handleQuery="handleQuery"></slot>
     <div v-show="showPanel">
       <slot name="hidePanel" :handleQuery="handleQuery" />
@@ -27,7 +28,7 @@
       </div>
     </div>
   </el-form>
-
+  </el-affix>
   <el-dialog
       v-model="showImport"
       title="模板导入"
@@ -46,23 +47,20 @@
       </span>
     </template>
   </el-dialog>
+
 </template>
 
-<script setup lang="ts" name="DataForm">
+<script setup lang="ts">
+  import type { FormInstance } from 'element-plus'
 
-  import type { FormInstance, FormRules } from 'element-plus'
-
-  type Props = {
-    model: Record<string, any>,
-    rules?: FormRules,
-    labelWidth?: string | number
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
+  defineOptions({
+    name: 'DataForm',
+    inheritAttrs: false
   })
 
+  const attrs = useAttrs()
+  console.log(attrs)
   const formRef = ref<FormInstance>()
-  const formModel = reactive<Record<string, any>>(props.model)
 
   const showPanelBtn = computed<boolean>(() => !!useSlots().hidePanel)
   let showPanel = ref<boolean>(false)
@@ -70,14 +68,12 @@
   let showImport = ref<boolean>(false)
 
   const emit = defineEmits<{
-    (e: 'update:model', model: Record<string, any>): void,
     (e: 'queryCallback', form: FormInstance): void,
     (e: 'exportCallback', form: FormInstance): void,
   }>()
 
   const handleReset = () => {
     formRef.value!.resetFields()
-    emit('update:model', formModel)
   }
   
   const handleQuery = () => {
@@ -93,16 +89,19 @@
     emit('exportCallback', formRef.value!)
   }
 
+  defineExpose({
+    formRef
+  })
 </script>
 
 <style scoped lang="less">
-@import url('@assets/styles/base.less');
+  @import url('@assets/styles/base.less');
 
-.operate-panel {
-  &:extend(.flex-row-center);
-  justify-content: space-between;
-  :deep(.el-form-item__content) {
+  .operate-panel {
+    &:extend(.flex-row-center);
+    justify-content: space-between;
+    :deep(.el-form-item__content) {
 
+    }
   }
-}
 </style>

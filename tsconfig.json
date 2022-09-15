@@ -23,7 +23,8 @@
     "types": [
       "vite/client",
       "element-plus/global",
-      "vite-plugin-svg-icons/client"
+      "vite-plugin-svg-icons/client",
+      "unplugin-vue-define-options/macros-global"
     ],
     "removeComments": true,
     "paths": {

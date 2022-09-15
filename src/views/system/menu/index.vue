@@ -1,14 +1,17 @@
 <template>
-
-  <data-form :model="formData" :rules="formRules" @queryCallback="query" @exportCallback="handleExport">
+  <data-form ref="dataFormRef" style="margin-bottom: 20px"
+             :model="formData" :rules="formRules" :inline="true"
+             @queryCallback="query" @exportCallback="handleExport">
     <el-form-item label="菜单名称" prop="menuName">
       <el-input
           v-model="formData.menuName"
           placeholder="请输入菜单名称"
-          @keyup.enter.native="query" />
+          @keyup.enter.native="query()" />
     </el-form-item>
     <el-form-item label="状态" prop="state">
-      <el-input v-model="formData.state" placeholder="请选择状态" />
+      <select-dict-data type="state" v-model="formData.state"
+                        placeholder="请选择状态"
+                        clearable />
     </el-form-item>
     <template #hidePanel>
       <el-form-item label="菜单名称" prop="menuName">
@@ -22,14 +25,14 @@
     </template>
   </data-form>
   <el-table
+      class="table-data"
       :data="tableData"
       row-key="path"
-      style="margin-top: 20px"
-      border
+      :border="true"
   >
     <el-table-column prop="menuName" label="菜单名称" sortable />
     <el-table-column prop="menuName" label="图标">
-      <template #default="{row, column, $index}">
+      <template #default="{row}">
         <svg-icon :name="row.icon" size="20px" />
       </template>
     </el-table-column>
@@ -50,22 +53,28 @@
     <el-table-column prop="createTime" label="创建时间" sortable />
     <el-table-column prop="createTime" label="创建时间" sortable />
     <el-table-column prop="createTime" label="创建时间" sortable />
-    <el-table-column label="操作" fixed="right" width="250">
-      <template #default="{row, column, $index}">
-        <el-button type="primary">修改</el-button>
-        <el-button type="primary">新增</el-button>
-        <el-button type="danger">删除</el-button>
+    <el-table-column label="操作" fixed="right" width="150">
+      <template #default>
+        <el-link type="primary">修改</el-link>
+        <el-link type="primary">新增</el-link>
+        <el-link type="primary">删除</el-link>
       </template>
     </el-table-column>
   </el-table>
-
 </template>
 
-<script setup lang="ts" name="MENU">
+<script setup lang="ts">
   import type { MenuForm, MenuTree } from '@api/system/menu/types'
-  import type { FormInstance, FormRules } from 'element-plus'
+  import type { FormRules } from 'element-plus'
   import { getMenuTree } from '@api/system/menu'
   import DataForm from '@components/DataForm/index.vue'
+  import SelectDictData from '@components/SelectDictData/index.vue'
+
+  defineOptions({
+    name: 'MENU'
+  })
+
+  const dataFormRef = ref<InstanceType<typeof DataForm> | null>(null)
 
   let formData = reactive<MenuForm>({
     menuName: '',
@@ -80,7 +89,7 @@
 
   let tableData = reactive<MenuTree[]>([])
 
-  const query = (form:FormInstance) => {
+  const query = () => {
     tableData.length = 0
     getMenuTree(formData).then(data => {
       tableData.push(...data)
@@ -91,17 +100,15 @@
     console.log('导出')
   }
 
+  onMounted(() => {
+
+  })
 </script>
 
 <style scoped lang="less">
   @import url('@assets/styles/base.less');
 
-  .operate {
-    &:extend(.flex-row-center);
-    justify-content: space-between;
-    :deep(.el-form-item__content) {
-
-    }
+  .el-link+.el-link {
+    margin-left: 12px;
   }
-
 </style>

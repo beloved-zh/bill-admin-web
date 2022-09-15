@@ -24,7 +24,6 @@
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
   import useStore from '@store/index'
-  import {TagView} from "@store/types/tagsView";
 
   const route = useRoute()
 
