@@ -1,5 +1,4 @@
 <template>
-  <el-affix position="top" :offset="20">
   <el-form ref="formRef" v-bind="attrs">
     <slot :handleQuery="handleQuery"></slot>
     <div v-show="showPanel">
@@ -28,7 +27,6 @@
       </div>
     </div>
   </el-form>
-  </el-affix>
   <el-dialog
       v-model="showImport"
       title="模板导入"
@@ -47,7 +45,6 @@
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup lang="ts">
@@ -59,7 +56,7 @@
   })
 
   const attrs = useAttrs()
-  console.log(attrs)
+
   const formRef = ref<FormInstance>()
 
   const showPanelBtn = computed<boolean>(() => !!useSlots().hidePanel)

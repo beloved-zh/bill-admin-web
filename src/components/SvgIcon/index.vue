@@ -5,6 +5,11 @@
 </template>
 
 <script setup lang="ts">
+
+  defineOptions({
+    name: 'SvgIcon'
+  })
+
   const props = defineProps({
     prefix: {
       type: String,

@@ -11,6 +11,10 @@
 
 <script setup lang="ts">
 
+  defineOptions({
+    name: 'RightKeyMenu'
+  })
+
   type Props = {
     modelValue: boolean,
     clikeEvent: MouseEvent,

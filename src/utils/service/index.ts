@@ -58,3 +58,4 @@ const request = <T>(config: RequestConfig): Promise<T> => {
 }
 
 export default request
+
