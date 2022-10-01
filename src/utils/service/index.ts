@@ -1,7 +1,7 @@
 import Request from './request'
 import type { AxiosResponse } from 'axios'
 import type { RequestConfig } from './types'
-import { RequestEnum, ContentTypeEnum } from '@enums/httpEnums'
+import { MethodEnum, ContentTypeEnum } from '@enums/httpEnums'
 import { ElMessage } from 'element-plus'
 import useStore from '@/store'
 
@@ -13,7 +13,7 @@ interface MyResponse<T = any> {
 
 const defaultRequest = new Request({
     baseURL: import.meta.env.VITE_APP_BASE_API,
-    timeout: 1000 * 3,
+    timeout: 1000 * 5,
     headers: {
         'Content-Type': ContentTypeEnum.JSON
     },
@@ -31,6 +31,7 @@ const defaultRequest = new Request({
         },
         // 响应拦截器
         responseInterceptors: (result:AxiosResponse<MyResponse>) => {
+
             const { code, message, data } = result.data
             if (code === 2000) {
                 return data
@@ -39,20 +40,22 @@ const defaultRequest = new Request({
                     message: message || '系统内部错误',
                     type: 'error'
                 })
-                return Promise.reject(new Error(message || '系统内部错误'));
+                return Promise.reject(new Error(message || '系统内部错误'))
             }
         },
         responseInterceptorsCatch: err => {
-            return err
+            const { message } = err.response.data
+                ElMessage({
+                message: message || '系统内部错误',
+                type: 'error'
+            })
+            return Promise.reject(new Error(message || '系统内部错误'))
         }
     }
 })
 
 const request = <T>(config: RequestConfig): Promise<T> => {
-    const { method = RequestEnum.POST } = config
-    if (method.toUpperCase() === RequestEnum.GET) {
-        config.params = config.data
-    }
+    const { method = MethodEnum.POST } = config
     config.method = method
     return defaultRequest.instance.request(config)
 }

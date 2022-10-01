@@ -1,7 +1,7 @@
 /**
  * @description: request method
  */
-export enum RequestEnum {
+export enum MethodEnum {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',

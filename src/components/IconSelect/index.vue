@@ -43,7 +43,7 @@
 
   const visible = ref(false)
 
-  let iconName = ref(props.modelValue)
+  let iconName = ref('')
 
   const iconInputRef = ref<InstanceType<typeof ElInput>>()
 
@@ -65,6 +65,7 @@
   
   const handleSelected = (icon:IconItem) => {
     iconName.value = icon.font_class
+    visible.value = false
   }
 
   const emit = defineEmits(['update:modelValue'])
@@ -75,6 +76,12 @@
     deep: true
   })
 
+  watch(() => props.modelValue, () => {
+    iconName.value = props.modelValue
+  }, {
+    deep: true,
+    immediate: true
+  })
 
   onMounted(() => {
     getIconFontJson().then(data => {

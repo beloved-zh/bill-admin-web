@@ -1,23 +1,29 @@
-export interface MenuForm {
+import { MenuTypeEnum, BooleanEnum, StateEnum } from '@enums/systemEnums'
+
+export interface MenuRequest {
     menuName: string;
     state: string;
 }
 
-export interface MenuData {
-    menuId: number;
-    menuName: string;
+export interface MenuForm {
+    menuId?: number;
     parentId: number;
-    orderNum: number;
+    menuType: MenuTypeEnum
+    menuTitle: string;
+    menuName: string;
     path: string;
     component: string;
-    iframePath: string;
-    hasCache: string;
-    hidden: string;
-    fixed: string;
-    menuType: string;
-    state: string;
     icon: string;
+    orderNum: number;
+    fixed: BooleanEnum;
+    hidden: BooleanEnum;
+    hasCache: BooleanEnum;
     remark: string;
+    state: StateEnum;
+}
+
+export interface MenuData extends MenuForm {
+    menuId: number;
     createBy: string;
     createTime: string;
     updateBy: string;

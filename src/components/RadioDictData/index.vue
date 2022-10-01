@@ -1,21 +1,21 @@
 <template>
-  <el-select v-bind="attrs" ref="elSelectRef" >
-    <el-option
+  <el-radio-group v-bind="attrs" ref="elRadioRef" >
+    <el-radio
         v-for="item in options"
         :key="item.value"
-        :label="item[label]"
-        :value="item[value]"
-    />
-  </el-select>
+        :label="item[value]" >
+      {{item[label]}}
+    </el-radio>
+  </el-radio-group>
 </template>
 
 <script setup lang="ts">
-  import type { ElSelect } from 'element-plus/es'
+  import type { ElRadioGroup } from 'element-plus/es'
   import type { Option } from '@api/common/types'
   import { getOptionData } from '@api/common'
 
   defineOptions({
-    name: 'SelectDictData'
+    name: 'RadioDictData'
   })
 
   type Props = {
@@ -31,7 +31,7 @@
 
   const attrs = useAttrs()
 
-  let elSelectRef = ref<InstanceType<typeof ElSelect>>()
+  let elRadioRef = ref<InstanceType<typeof ElRadioGroup>>()
 
   let options = reactive<Option[]>([])
 

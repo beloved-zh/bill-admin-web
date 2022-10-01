@@ -37,16 +37,29 @@ const formatRoutes = (menuTrees: MenuTree[], basePath = '/', breadcrumbs:string[
         } else {
             // 新建标签页菜单不注册路由
             if (!isExternalLink(item.path)) {
-                routes.push({
-                    path: resolvePath(basePath, item.path),
-                    name: item.name,
-                    meta: {
-                        ...item.meta,
-                        breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs))
-                    },
-                    // 内嵌 iframe 路由
-                    component: item.meta.iframe && isExternalLink(item.meta.iframe) ? iframePage : modules[`../../views/${item.component}/index.vue`] || errorPage,
-                })
+                // 判断是否 iframe 路由
+                if (isExternalLink(item.component!)) {
+                    routes.push({
+                        path: resolvePath(basePath, item.path),
+                        name: item.name,
+                        meta: {
+                            ...item.meta,
+                            breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs)),
+                            iframe: item.component!
+                        },
+                        component: iframePage
+                    })
+                } else {
+                    routes.push({
+                        path: resolvePath(basePath, item.path),
+                        name: item.name,
+                        meta: {
+                            ...item.meta,
+                            breadcrumbs: JSON.parse(JSON.stringify(breadcrumbs))
+                        },
+                        component: modules[`../../views/${item.component}/index.vue`] || errorPage,
+                    })
+                }
             }
         }
         breadcrumbs.pop()
