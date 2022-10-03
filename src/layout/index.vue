@@ -12,6 +12,10 @@
   import Sidebar from '@layout/components/Sidebar/index.vue'
   import Header from '@layout/components/Header/index.vue'
   import AppMain from '@layout/components/AppMain/index.vue'
+
+  defineOptions({
+    name: 'Layout'
+  })
 </script>
 
 <style scoped lang="less">

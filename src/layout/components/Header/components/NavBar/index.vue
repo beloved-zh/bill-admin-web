@@ -25,6 +25,10 @@
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
   import useStore from '@store/index'
 
+  defineOptions({
+    name: 'NavBar'
+  })
+
   const route = useRoute()
 
   const isDark = useDark()

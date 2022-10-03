@@ -29,6 +29,10 @@
   import { MenuTree } from '@api/auth/types'
   import { resolveBasePath } from '@utils/index'
 
+  defineOptions({
+    name: 'Sidebar'
+  })
+
   const route = useRoute()
 
   const { app, menu } = useStore()

@@ -16,6 +16,10 @@
   import type { RouteLocationNormalizedLoaded } from 'vue-router'
   import useStore from '@store/index'
 
+  defineOptions({
+    name: 'AppMain'
+  })
+
   const { tagsView } = useStore()
 
   const getKey = (route:RouteLocationNormalizedLoaded):string => {

@@ -26,6 +26,10 @@
   import { useRouter } from 'vue-router'
   import useStore from '@store/index'
 
+  defineOptions({
+    name: 'TreeItem'
+  })
+
   const props = defineProps<{
     menuItem: MenuTree,
     basePath: string,

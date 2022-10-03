@@ -47,6 +47,10 @@
   import useStore from '@store/index'
   import { resolvePath } from '@utils/index'
 
+  defineOptions({
+    name: 'TagsView'
+  })
+
   const router = useRouter()
   const route = useRoute()
 

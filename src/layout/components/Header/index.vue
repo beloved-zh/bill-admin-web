@@ -8,6 +8,10 @@
 <script setup lang="ts">
   import NavBar from '@layout/components/Header/components/NavBar/index.vue'
   import TagsView from '@layout/components/Header/components/TagsView/index.vue'
+
+  defineOptions({
+    name: 'Header'
+  })
 </script>
 
 <style scoped lang="less">
