@@ -18,5 +18,6 @@
 <style scoped lang="less">
   .app-header {
     height: @nav-bar-height + @tags-view-height;
+    border-bottom: 1px solid var(--td-component-stroke);
   }
 </style>

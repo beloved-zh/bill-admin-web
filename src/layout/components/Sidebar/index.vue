@@ -62,9 +62,12 @@
 
   .app-sidebar {
 
+    :deep(.t-default-menu) {
+      border-right: 1px solid var(--td-component-stroke);
+    }
+
     :deep(.t-menu__logo) {
       height: @nav-bar-height + @tags-view-height;
-      border-right: 1px solid var(--td-component-stroke);
     }
 
     .logo-content {
