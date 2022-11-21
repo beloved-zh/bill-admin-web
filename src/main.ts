@@ -1,13 +1,9 @@
 // svg注册
 import 'virtual:svg-icons-register'
-// element-plus样式
-import 'element-plus/theme-chalk/index.css'
-// element-plus夜间模式样式
-import 'element-plus/theme-chalk/dark/css-vars.css'
-// animated 动画库
-import 'animate.css'
 // iconfont
 import '@assets/icons/iconfont/iconfont.js'
+// tdesign库全局样式资源
+import 'tdesign-vue-next/es/style/index.css'
 // 自定义样式
 import '@assets/styles/index.less'
 

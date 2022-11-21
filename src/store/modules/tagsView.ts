@@ -4,120 +4,119 @@ import type { TagsViewState, TagView } from '../types/tagsView'
 const useTagsViewStore = defineStore({
     id: 'tagsView',
     state: (): TagsViewState => ({
-        tagViews: [],
-        cachedViews: []
+        activeTagView: {
+            path: '/'
+        },
+        fixedTagViews: [],
+        canCloseTagViews: []
     }),
     getters: {
-        cachedNames: (state):string[] => {
-            return state.cachedViews.map(item => {
-                return item.name as string
-            })
+        tagViews: (state): TagView[] => {
+            return state.fixedTagViews.concat(state.canCloseTagViews)
+        },
+        allFixed(): boolean {
+            return this.tagViews.every(item => item.meta?.fixed)
+        },
+        cachedNames(): string[] {
+            return this.tagViews.filter(item => item.meta!.keepAlive).map(item => item.name as string)
         }
     },
     actions: {
-        getViewKey(path: string) {
-            const currIndex = this.tagViews.findIndex(item => item.path === path)
-            if (currIndex === -1) {
-                return
-            }
-
-            return this.tagViews[currIndex].key
+        // 判断标签是否存在
+        isExist(view: TagView) : boolean {
+            return this.tagViews.some(item => item.path === view.path)
         },
-        // 利用router-view component key 值变化会导致内容刷新来实现页面强制刷新
-        refreshView(view: TagView) {
-            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
-            if (currIndex === -1) {
-                return
-            }
-
-            this.tagViews[currIndex].key = Date.now()
+        // 获取标签下标
+        getViewIndex(view: TagView) : number {
+            return this.tagViews.findIndex(item => item.path === view.path)
         },
+        // 除自己外都是固定
+        otherFixed(view: TagView) : boolean {
+            return this.tagViews.every(item => view.path === item.path || item.meta?.fixed)
+        },
+        // 添加标签
         addView(view: TagView) {
+            if (this.isExist(view)) return
+
             view.key = Date.now()
 
-            // 已经存在不添加
-            if(this.tagViews.some(item => item.path === view.path)) return
             if (view.meta && view.meta.fixed) {
-                this.tagViews.unshift(JSON.parse(JSON.stringify(view)))
+                this.fixedTagViews.push(JSON.parse(JSON.stringify(view)))
             } else {
-                this.tagViews.push(JSON.parse(JSON.stringify(view)))
-            }
-
-            if(this.cachedViews.some(item => item.path === view.path)) return
-            if (view.meta && view.meta.keepAlive) {
-                this.cachedViews.push(JSON.parse(JSON.stringify(view)))
+                this.canCloseTagViews.push(JSON.parse(JSON.stringify(view)))
             }
         },
-        closeView(view: TagView) {
-            let deleteIndex
-            let deleteItem
+        // 关闭标签
+        closeTagView(view: TagView) : TagView {
+            const index = this.getViewIndex(view)
+            const activeIndex = this.getViewIndex(this.activeTagView)
 
-            this.tagViews = this.tagViews.filter((item, index) => {
-                if (item.path === view.path) {
-                    deleteIndex = index
-                    deleteItem = item
-                    return false
-                }
-                return true
-            })
-
-            if (deleteItem) {
-                this.cachedViews = this.cachedViews.filter(item => item.path !== deleteItem.path)
+            if (view.meta && view.meta.fixed) {
+                this.fixedTagViews = this.fixedTagViews.filter(item => item.path !== view.path)
+            } else {
+                this.canCloseTagViews = this.canCloseTagViews.filter(item => item.path !== view.path)
             }
 
-            return deleteIndex
+            return index !== activeIndex ? this.activeTagView : this.tagViews[index - 1] || this.tagViews[index] || {path: '/'}
         },
-        closeLeftViews(view: TagView) {
-            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
-            if (currIndex === -1) {
-                return
+        // 关闭左侧
+        closeLeftTagViews(view: TagView) : TagView {
+            const index = this.getViewIndex(view)
+            const activeIndex = this.getViewIndex(this.activeTagView)
+
+            let targetTag = this.activeTagView
+
+            if (index > activeIndex) {
+                targetTag = view
             }
 
-            this.tagViews = this.tagViews.filter((item, index) => {
-                if (index >= currIndex || item.meta?.fixed) {
-                    return true
-                }
-                this.cachedViews = this.cachedViews.filter(cachedItem => {
-                    return item.path !== cachedItem.path
-                })
+            const leftTagViews = this.tagViews.slice(0, index)
 
-                return false
+            leftTagViews.forEach(leftTag => {
+                if (leftTag.meta?.fixed) return
+                this.canCloseTagViews = this.canCloseTagViews.filter(item => item.path !== leftTag.path)
             })
+
+            return targetTag
         },
-        closeRightViews(view: TagView) {
-            const currIndex = this.tagViews.findIndex(item => item.path === view.path)
-            if (currIndex === -1) {
-                return
+        // 关闭右侧
+        closeRightTagViews(view: TagView) : TagView {
+            const index = this.getViewIndex(view)
+            const activeIndex = this.getViewIndex(this.activeTagView)
+
+            let targetTag = this.activeTagView
+
+            if (index < activeIndex) {
+                targetTag = view
             }
 
-            this.tagViews = this.tagViews.filter((item, index) => {
-                if (index <= currIndex || item.meta?.fixed) {
-                    return true
-                }
-                this.cachedViews = this.cachedViews.filter(cachedItem => {
-                    return item.path !== cachedItem.path
-                })
+            const rightTagViews = this.tagViews.slice(index + 1)
 
-                return false
+            rightTagViews.forEach(rightTag => {
+                this.canCloseTagViews = this.canCloseTagViews.filter(item => item.path !== rightTag.path)
             })
+
+            return targetTag
         },
-        closeOtherViews(view: TagView) {
-            this.tagViews = this.tagViews.filter(item => {
-                return item.meta?.fixed || item.path === view.path
-            })
-
-            this.cachedViews = this.cachedViews.filter(item => {
-                return item.meta?.fixed || item.path === view.path
-            })
+        // 关闭其它
+        closeOtherTagViews(view: TagView) {
+            this.canCloseTagViews = this.canCloseTagViews.filter(item => item.path === view.path)
         },
-        closeAllViews() {
-            this.tagViews = this.tagViews.filter(item => {
-                return item.meta?.fixed
-            })
+        // 关闭所有
+        closeAllTagViews() : TagView {
+            this.canCloseTagViews = []
+            return this.fixedTagViews[this.fixedTagViews.length - 1] || {path: '/'}
+        },
+        // 获取标签key
+        getTagViewKey(path: string): number | undefined {
+            return this.tagViews[this.tagViews.findIndex(item => item.path === path)]?.key
+        },
+        // 刷新标签
+        refreshTagView(view: TagView) {
+            const index = this.getViewIndex(view)
 
-            this.cachedViews = this.cachedViews.filter(item => {
-                return item.meta?.fixed
-            })
+            // 通过 改变 component key 值进行强制刷新
+            this.tagViews[index].key = Date.now()
         }
     }
 })

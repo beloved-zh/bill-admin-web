@@ -1,13 +1,16 @@
 <template>
-  <h1>level/level-2/level-2-1</h1>
-  <input type="text" v-model="val">
+  <page-list />
+
 </template>
 
 <script setup lang="ts">
+  import PageList from '@components/PageList/index.vue'
+
   defineOptions({
-    name: 'LEVEL-2-1'
+    name: 'USER'
   })
-  let val = ref('')
+
+
 </script>
 
 <style scoped lang="less">

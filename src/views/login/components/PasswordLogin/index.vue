@@ -1,83 +1,54 @@
 <template>
-  <el-form
-      class="login-form"
-      label-position="left"
-      ref="loginFormRef"
-      :rules="loginRules"
-      :model="loginForm"
-  >
-    <el-form-item prop="username">
-      <el-input
-          v-model="loginForm.username"
-          placeholder="请输入账号"
-          name="username"
-          type="text"
-          tabindex="1"
-      >
-        <template #prefix>
-          <span>
-            <svg-icon name="user" size="14px" ></svg-icon>
-          </span>
+  <t-form class="login-form" ref="loginFormRef" :data="loginForm" :rules="loginRules" :label-width="0" @submit="handleLogin" >
+    <t-form-item name="username" >
+      <t-input v-model="loginForm.username" clearable placeholder="请输入手机号或邮箱">
+        <template #prefix-icon>
+          <my-icon name="icon-user" />
         </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item prop="password">
-      <el-input
-          v-model="loginForm.password"
-          placeholder="请输入密码"
-          name="password"
-          type="password"
-          tabindex="2"
-          :show-password="true"
-      >
-        <template #prefix>
-          <svg-icon name="password" size="14px" ></svg-icon>
+      </t-input>
+    </t-form-item>
+    <t-form-item name="password" >
+      <t-input v-model="loginForm.password" type="password" clearable placeholder="请输入密码">
+        <template #prefix-icon>
+          <my-icon name="icon-password" />
         </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item prop="code" v-if="captcha.onOff">
-      <el-row :gutter="10" class="w-10">
-        <el-col :span="18">
-          <el-input
-              v-model="loginForm.code"
-              placeholder="请输入验证码"
-              name="code"
-              type="text"
-              tabindex="3"
-          >
-            <template #prefix>
-              <svg-icon name="valid-code" size="14px" ></svg-icon>
-            </template>
-          </el-input>
-        </el-col>
-        <el-col :span="6">
-          <div class="captcha" @click="handleCaptcha()">
-            <img class="w-10 h-10" :src="captcha.image" />
-          </div>
-        </el-col>
-      </el-row>
-    </el-form-item>
-    <el-form-item>
-      <div class="login-options w-10">
-        <el-checkbox label="下次自动登录" v-model="autoLogin" />
-        <el-link class="forgot-password" :underline="false" type="primary" >忘记密码了？</el-link>
+      </t-input>
+    </t-form-item>
+    <t-form-item name="code" v-if="captcha.onOff" >
+      <t-space>
+        <t-input v-model="loginForm.code" placeholder="请输入验证码">
+          <template #prefix-icon>
+            <my-icon name="icon-valid-code" />
+          </template>
+        </t-input>
+        <img :src="captcha.image" class="captcha" @click="handleCaptcha" />
+      </t-space>
+    </t-form-item>
+    <t-form-item>
+      <div class="login-options">
+        <t-link class="forgot-password" theme="default" hover="color">忘记密码？</t-link>
+        <t-link theme="primary" hover="color">新用户账号注册</t-link>
       </div>
-    </el-form-item>
-    <el-form-item>
-      <el-button class="w-10" type="primary" @click="handleLogin(loginFormRef)">登录</el-button>
-    </el-form-item>
-  </el-form>
+    </t-form-item>
+    <t-form-item>
+      <t-button theme="primary" type="submit" block>登录</t-button>
+    </t-form-item>
+  </t-form>
 </template>
 
 <script setup lang="ts">
 
+  defineOptions({
+    name: 'PasswordLogin'
+  })
+
+  import type { FormRule, SubmitContext } from 'tdesign-vue-next'
   import type { Captcha, LoginFormData } from '@api/auth/types'
-  import type { FormInstance, FormRules } from 'element-plus'
   import { getCaptcha } from '@api/auth'
   import useStore from '@store/index'
   import { useRouter, useRoute } from 'vue-router'
 
-  const { app, user } = useStore()
+  const { useUser } = useStore()
 
   const router = useRouter()
   const route = useRoute()
@@ -87,24 +58,18 @@
     params: {}
   })
 
-  const loginFormRef = ref<FormInstance>()
-
-  let autoLogin = ref<boolean>(true)
-
-  let loginButLoading = ref<boolean>(false)
-
-  const loginRules = reactive<FormRules>({
+  const loginRules:Record<string, FormRule[]> = {
     username: [
-      { required: true, message: '请输入账号', trigger: 'blur' }
+      { required: true, message: '账号不能为空', trigger: 'blur' }
     ],
     password: [
-      { required: true, message: '请输入密码', trigger: 'blur' }
+      { required: true, message: '密码不能为空', trigger: 'blur' }
     ],
     code: [
-      { required: true, message: '请输入验证码', trigger: 'blur' },
-      { len: 5, message: '请输入5位验证码', trigger: 'blur' }
+      { required: true, message: '验证码不能为空', trigger: 'blur' },
+      { len: 5, message: '验证码长度为5位', trigger: 'blur' }
     ]
-  })
+  }
 
   let loginForm = reactive<LoginFormData>({
     username: 'admin',
@@ -119,37 +84,29 @@
     image: ''
   })
 
-  watch(autoLogin, (newValue) => {
-    app.$state.autoLogin = newValue
-  })
-
+  // 获取验证码
   const handleCaptcha = () => {
     getCaptcha().then(res => {
       let {onOff, uuid, image} = res
-      captcha.uuid = loginForm.uuid = uuid
       captcha.onOff = onOff
       captcha.image = image
+      captcha.uuid = loginForm.uuid = uuid
     })
   }
 
-  const handleLogin = async (formEl: FormInstance | undefined) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-      if (!valid) {
-        return
-      }
-      loginButLoading.value = true
-      user.login(loginForm).then(res => {
-        router.push({ path: routeParams.redirect || '/', query: routeParams.params });
-      }).finally(() => {
-        loginButLoading.value = false
-        handleCaptcha()
-      })
+  // 处理登录
+  const handleLogin = async (context: SubmitContext<FormData>) => {
+    if (context.validateResult !== true) {
+      return
+    }
+    useUser.login(loginForm).then(res => {
+      router.push({ path: routeParams.redirect || '/', query: routeParams.params });
+    }).finally(() => {
+      handleCaptcha()
     })
   }
 
   onMounted(() => {
-    handleLogin(loginFormRef.value)
     handleCaptcha()
     Object.keys(route.query).map((key) => {
       if (key === 'redirect') {
@@ -160,23 +117,27 @@
     })
   })
 
-  defineExpose({
-    handleCaptcha
-  })
 </script>
 
 <style scoped lang="less">
   @import url('@assets/styles/base.less');
   .login-form {
-    padding: 0 10px;
-    width: 380px;
+    padding: 10px;
 
     .captcha {
-      height: 30px;
+      width: 100px;
+      height: 32px;
     }
 
-    .login-options:extend(.flex-row-center) {
+    .login-options {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
       justify-content: space-between;
+
+      .forgot-password {
+        color: #6c7d8f;
+      }
     }
   }
 </style>

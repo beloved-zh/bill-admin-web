@@ -1,28 +1,32 @@
 <template>
-  <el-aside class="app-sidebar" :width="sidebar.open ? variables.sideBarWidth: variables.sideBarShrinkWidth">
-    <el-link class="sidebar-logo" :underline="false">
-      <img class="logo-img" src="/src/assets/images/logo.png">
-      <span class="logo-title" v-if="sidebar.open">LOGO</span>
-    </el-link>
-    <el-scrollbar class="scrollbar" wrap-class="scrollbar-wrapper">
-      <el-menu
-          class="app-sidebar-el-menu"
-          mode="vertical"
-          :collapse="!sidebar.open"
-          :unique-opened="true"
-          :default-active="activeMenu"
-          :collapse-transition="false"
-      >
-        <template v-for="menu in menus" :key="menu.path">
-          <tree-item v-if="!menu.meta.hidden" :menu-item="menu" :base-path="resolveBasePath(menu.path)" :open="sidebar.open" />
-        </template>
-      </el-menu>
-    </el-scrollbar>
-  </el-aside>
+  <t-aside class="app-sidebar" :width="sidebar.open ? variables['menu-unfold-width'] : variables['menu-fold-width']">
+    <t-menu
+        ref="menuRef"
+        :expand-mutex="true"
+        :value="activeMenu"
+        v-model:expanded="expandedMenus"
+        :collapsed="!sidebar.open"
+        :width="menuWidth"
+    >
+      <template #logo>
+        <div class="logo-content">
+          <img class="logo-img" src="/src/assets/images/logo.png" />
+          <span class="logo-title" v-if="sidebar.open">LOGO</span>
+        </div>
+      </template>
+
+      <template v-for="menu in menus" :key="menu.path">
+        <tree-item v-if="!menu.meta.hidden" :menu="menu" :path="resolveBasePath(menu.path)" :open="sidebar.open" />
+      </template>
+    </t-menu>
+  </t-aside>
 </template>
 
 <script setup lang="ts">
-  import variables from '@assets/styles/variables.module.less'
+
+  import variables from '@/assets/styles/variables.module.less';
+  import type { TdMenuInterface } from 'tdesign-vue-next/lib/menu/const'
+  import type { MenuValue } from 'tdesign-vue-next/lib/menu/type'
   import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
   import useStore from '@store/index'
   import { useRoute } from 'vue-router'
@@ -33,64 +37,60 @@
     name: 'Sidebar'
   })
 
+  const menuRef = ref<TdMenuInterface>()
+
+  const expandedMenus = ref<MenuValue[]>()
+
   const route = useRoute()
 
-  const { app, menu } = useStore()
+  const { useApp, useMenu } = useStore()
 
-  const menus = computed<MenuTree[]>(() => menu.menus)
-  const sidebar = computed(() => app.sidebar)
-
+  const menus = computed<MenuTree[]>(() => useMenu.menus)
+  const sidebar = computed(() => useApp.sidebar)
   const activeMenu = computed(() => route.path)
+  const menuWidth = computed(() => [variables['menu-unfold-width'], variables['menu-fold-width']])
+
+  watch(route, () => {
+    expandedMenus.value = route.meta.breadcrumbs!.map(item => item.path)
+  }, {
+    immediate: true
+  })
 
 </script>
 
 <style scoped lang="less">
 
   .app-sidebar {
-    max-width: @sideBarWidth;
-    min-width: @sideBarShrinkWidth;
-    overflow: hidden;
-    overscroll-behavior: contain;
-    transition: width 0.2s linear;
-    box-shadow: 1px 0px 3px 0 rgb(0 0 0 / 12%),0 0 3px 0 rgb(0 0 0 / 4%);
-    z-index: 1;
 
-    .sidebar-logo {
-      width: inherit;
-      height: @sideBarLogoContainerHeight;
-      background-color: @sideBarLogoContainerBg;
-      padding: 0 10px;
-      overflow: hidden;
+    :deep(.t-menu__logo) {
+      height: @nav-bar-height + @tags-view-height;
+      border-right: 1px solid var(--td-component-stroke);
+    }
+
+    .logo-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       .logo-img {
-        width: @sideBarLogoWidth;
-        height: @sideBarLogoHeight;
+        width: 30px;
+        height: 30px;
       }
+
       .logo-title {
         margin-left: 10px;
         font-weight: 700;
-        color: #ffffff;
+        color: #000000;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
     }
 
-    .scrollbar {
-      :deep(.scrollbar-wrapper) {
-        height: calc(100% - @sideBarLogoContainerHeight);
-        overflow-x: hidden;
-        border-right: solid 1px #dcdfe6;
-        .app-sidebar-el-menu {
-          border-right: none;
-          transition: all 10ms;
-        }
-      }
 
-      :deep(.el-scrollbar__bar) {
-        width: 0;
-        height: 0;
-      }
-    }
+
+
   }
 </style>

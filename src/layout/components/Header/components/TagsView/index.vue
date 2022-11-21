@@ -1,266 +1,197 @@
 <template>
-  <div class="tags-view" ref="tagsViewRef">
-    <el-scrollbar class="scroll-container" ref="scrollbarRef" @wheel.native.prevent="handleScroll">
-      <template v-for="view in tagViews" :key="view.path">
-        <router-link
-            ref="tagRefs"
-            :class="isActive(view) ? 'tag-active' : 'tag'"
-            :to="view.path"
-            @contextmenu.prevent="openMenu(view, $event)"
-        >
-          {{ view.meta.title }}
-          <span class="close" v-if="!view.meta.fixed" @click.prevent.stop="closeSelectedTag(view)">
-            <SvgIcon name="close" size="10px" />
-          </span>
-          <span class="close" v-else>
-            <SvgIcon name="fixed" size="10px" />
-          </span>
-        </router-link>
-      </template>
-    </el-scrollbar>
-    <RightKeyMenu
-        class="right-key-menu"
-        :offset="-10"
-        v-model="showMenu"
-        :clikeEvent="openMenuEvent"
-        :parent-el="tagsViewRef">
-      <ul class="menu-main">
-        <li @click="refreshSelectedTag">刷新</li>
-        <li v-if="!isFixed" @click="closeSelectedTag(rightClickSelectedTag)">关闭</li>
-        <li v-if="!isFirstView" @click="closeLeftTags">关闭左侧</li>
-        <li v-if="!isLastView" @click="closeRightTags">关闭右侧</li>
-        <li v-if="tagViews.length > 1" @click="closeOtherTags">关闭其它</li>
-        <li v-if="tagViews.length > 1" @click="closeAllTags">关闭所有</li>
-      </ul>
-    </RightKeyMenu>
+  <div class="tags-view" ref="tagViewsRef">
+    <template v-for="view in tagViews" :key="view.path">
+      <router-link
+          v-mouse-menu="initTagMenu(view)"
+          ref="tagRefs"
+          :class="route.path === view.path ? 'tag-active' : 'tag'"
+          :to="view.path"
+          >
+        {{view.meta.title}}
+        <span v-if="!view.meta.fixed && tagViews.length > 1" @click.prevent.stop="closeTag(view)">
+          <my-icon class="icon" name="icon-close" size="12" />
+        </span>
+        <span v-else>
+          <my-icon class="icon" name="icon-fixed" size="12" />
+        </span>
+      </router-link>
+    </template>
   </div>
-
 </template>
 
 <script setup lang="ts">
-  import SvgIcon from '@components/SvgIcon/index.vue'
-  import RightKeyMenu from '@components/RightKeyMenu/index.vue'
-  import type { RouteRecordRaw, useLink } from 'vue-router'
+  import MyIcon from '@components/MyIcon/index.vue'
+  import type { RouteRecordRaw, useLink} from 'vue-router'
   import type { TagView } from '@store/types/tagsView'
-  import type { ElScrollbar } from 'element-plus'
-  import { useRoute, useRouter} from 'vue-router'
+  import { h } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
   import useStore from '@store/index'
   import { resolvePath } from '@utils/index'
+  import { MouseMenuDirective as vMouseMenu } from '@howdyjs/mouse-menu'
 
   defineOptions({
     name: 'TagsView'
   })
 
-  const router = useRouter()
   const route = useRoute()
+  const router = useRouter()
 
-  const { menu, tagsView } = useStore()
+  const { useMenu, useTagsView } = useStore()
 
-  let tagsViewRef = ref<HTMLDivElement>()
-  let scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
+  let tagViewsRef = ref<HTMLDivElement>()
   // @ts-ignore vue-router 将 RouterLink 的内部行为作为一个组合式API (useLink) 函数公开
   let tagRefs = ref<InstanceType<typeof useLink>[]>([])
 
+  // 打开的标签
+  const tagViews = computed<TagView[]>(() => useTagsView.tagViews)
+  // 所有路由
+  const routes = computed<RouteRecordRaw[]>(() => useMenu.routes)
+
+  // 监听当前路由添加到标签列表，同时移动到选中标签
   watch(route, () => {
-    if (route.meta.title) {
-      tagsView.addView(route)
-      moveToCurrentTag()
+    useTagsView.activeTagView = route
+    // 固定标签不在监听添加，初始化时已经添加过
+    if (!route.meta.fixed) {
+      useTagsView.addView(route)
     }
+    moveToActiveTag()
   }, {
     immediate: true
   })
 
-  const tagViews = computed<TagView[]>(() => tagsView.tagViews)
-  const routes = computed<RouteRecordRaw[]>(() => menu.routes)
-
-  let rightClickSelectedTag = ref<TagView>()
-
-  const isFixed = computed<boolean>(() => {
-    if (!rightClickSelectedTag.value) {
-      return false
-    }
-    if (rightClickSelectedTag.value.meta && rightClickSelectedTag.value.meta.fixed) {
-      return true
-    }
-    return false
-  })
-
-  const isFirstView = computed<boolean>(() => {
-    if (!rightClickSelectedTag.value || tagViews.value.length === 0) {
-      return false
-    }
-    if (rightClickSelectedTag.value.path === tagViews.value[0].path) {
-      return true
-    }
-    return false
-  })
-
-  const isLastView = computed<boolean>(() => {
-    if (!rightClickSelectedTag.value || tagViews.value.length === 0) {
-      return false
-    }
-    if (rightClickSelectedTag.value.path === tagViews.value[tagViews.value.length - 1].path) {
-      return true
-    }
-    return false
-  })
-
-  // 刷新
-  const refreshSelectedTag = () => {
-    if (!rightClickSelectedTag.value) {
-      return
-    }
-
-    tagsView.refreshView(rightClickSelectedTag.value)
-  }
-
-  // 关闭左边标签
-  const closeLeftTags = () => {
-    if (!rightClickSelectedTag.value) {
-      return
-    }
-    tagsView.closeLeftViews(rightClickSelectedTag.value)
-
-    router.push(rightClickSelectedTag.value.path as string)
-  }
-
-  // 关闭右边标签
-  const closeRightTags = () => {
-    if (!rightClickSelectedTag.value) {
-      return
-    }
-    tagsView.closeRightViews(rightClickSelectedTag.value)
-
-    router.push(rightClickSelectedTag.value.path as string)
-  }
-
-  // 关闭其它标签
-  const closeOtherTags = () => {
-    if (!rightClickSelectedTag.value) {
-      return
-    }
-    tagsView.closeOtherViews(rightClickSelectedTag.value)
-
-    router.push(rightClickSelectedTag.value.path as string)
-  }
-
-  // 关闭所有标签
-  const closeAllTags = () => {
-    if (!rightClickSelectedTag.value) {
-      return
-    }
-
-    tagsView.closeAllViews()
-
-    if (tagViews.value.length > 0) {
-      router.push(tagViews.value[tagViews.value.length - 1].path as string)
-    } else {
-      router.push("/")
-    }
-  }
-
-  let showMenu = ref(false)
-  let openMenuEvent = ref<MouseEvent>()
-
-  // 打开右键菜单
-  const openMenu = (view:TagView, e: MouseEvent) => {
-    openMenuEvent.value = e
-    showMenu.value = true
-
-    rightClickSelectedTag.value = view
-  }
-
-  // 关闭选中标签
-  const closeSelectedTag = (view:TagView) => {
-    const deleteIndex = tagsView.closeView(view)
-
-    // 关闭激活标签视图进行跳转
-    if (isActive(view)) {
-      toLatelyTag(deleteIndex)
-    }
-  }
-
-  // 跳转最近标签
-  const toLatelyTag = (index) => {
-    if (!index && index !== 0) return
-
-    let prevTag = tagViews.value[index - 1]
-    if (prevTag) {
-      router.push(prevTag.path as string)
-      return
-    }
-
-    let nextTag = tagViews.value[index === 0 ? index : index + 1]
-    if (nextTag) {
-      router.push(nextTag.path as string)
-      return
-    }
-
-    router.push('/')
-  }
-
-  // 是否是激活标签
-  const isActive = (view:TagView) => {
-    return route.path === view.path
-  }
-
-  // 移动到当前标签
-  function moveToCurrentTag() {
+  // 移动到初始化标签
+  function moveToActiveTag() {
     nextTick(() => {
-      if (!scrollbarRef.value || !scrollbarRef.value.wrap$) {
-        return
-      }
-      let wrap = scrollbarRef.value.wrap$
+      const activeRefIndex = tagRefs.value.findIndex(tagRef => tagRef.to === route.path)
+
       // 容器偏移量
-      const scrollLeft = wrap.scrollLeft
+      const scrollLeft = tagViewsRef.value!.scrollLeft
       // 容器可视宽度
-      const containerWidth = wrap.offsetWidth
+      const containerWidth = tagViewsRef.value!.offsetWidth
 
-      let prevTag;
-      let nextTag;
+      // 标签相对父容器的偏移量
+      const tagOffsetLeft = tagRefs.value[activeRefIndex].$el.offsetLeft
+      // 标签宽度
+      const tagOffsetWidth = tagRefs.value[activeRefIndex].$el.offsetWidth
 
-      const indexOf = tagViews.value.findIndex(item => item.path === route.path);
-
-      prevTag = tagViews.value[indexOf - 1]
-      nextTag = tagViews.value[indexOf + 1]
-
-      let prevTagOffsetLeft = 0
-      let currentTagOffsetLeft = 0
-      let nextTagOffsetLeft = 0
-
-      for (let tag of tagRefs.value) {
-        if (prevTag && prevTag.path === tag.to) {
-          // 上个标签 偏移量 - 宽度
-          prevTagOffsetLeft = tag.$el.offsetLeft - tag.$el.offsetWidth
-        }
-        if (route.path === tag.to) {
-          // 当前标签 偏移量 + 宽度
-          currentTagOffsetLeft = tag.$el.offsetLeft + tag.$el.offsetWidth
-        }
-        if (nextTag && nextTag.path === tag.to) {
-          // 下个标签 偏移量 + 宽度
-          nextTagOffsetLeft = tag.$el.offsetLeft + tag.$el.offsetWidth
-        }
+      if (tagOffsetLeft + tagOffsetWidth > scrollLeft + containerWidth) {
+        tagViewsRef.value!.scrollLeft = tagOffsetLeft + tagOffsetWidth - containerWidth + 4
       }
 
-      if (nextTagOffsetLeft > scrollLeft + containerWidth) {
-        wrap.scrollLeft = nextTagOffsetLeft - containerWidth;
-      } else if (currentTagOffsetLeft > scrollLeft + containerWidth) {
-        wrap.scrollLeft = currentTagOffsetLeft - containerWidth;
-      } else if (prevTagOffsetLeft < scrollLeft) {
-        wrap.scrollLeft = prevTagOffsetLeft;
+      if (tagOffsetLeft < scrollLeft) {
+        tagViewsRef.value!.scrollLeft = tagOffsetLeft - 4
       }
-
     })
   }
 
-  // 重写滚动事件，滚轮横向滚动
-  const handleScroll = (e:WheelEvent) => {
-    if (!scrollbarRef.value || !scrollbarRef.value.wrap$) {
-      return
+  // 初始化右键菜单配置
+  const initTagMenu = (view: TagView) => {
+    return {
+      params: view,
+      menuWidth: 110,
+      menuWrapperCss: {
+        background: '#fff'
+      },
+      menuItemCss: {
+        iconColor: '#444040',
+        hoverBackground: '#66b1ff',
+        hoverLabelColor: '#fff'
+      },
+      hasIcon: true,
+      iconType: 'vnode-icon',
+      menuList: [
+        {
+          label: '刷新',
+          icon: h(MyIcon, {name: 'icon-search', size: 'small'}),
+          fn: (view: TagView) => refreshTag(view)
+        },
+        {
+          label: '全屏',
+          icon: h(MyIcon, {name: 'icon-full-screen', size: 'small'}),
+          fn: (view: TagView) => fullScreenContent(view)
+        },
+        {
+          line: true
+        },
+        {
+          label: '关闭',
+          // 固定标签或只剩一个标签禁用
+          disabled: (view: TagView) => view.meta && view.meta.fixed || tagViews.value.length <= 1,
+          fn: (view: TagView) => closeTag(view)
+        },
+        {
+          label: '关闭左侧',
+          // 第一个标签或只剩一个标签或选择标签的前一个标签是固定标签禁用
+          disabled: (view: TagView) => view.path === tagViews.value[0].path || tagViews.value.length === 1 || tagViews.value[useTagsView.getViewIndex(view) - 1].meta?.fixed,
+          fn: (view: TagView) => closeLeftTags(view)
+        },
+        {
+          label: '关闭右侧',
+          // 最后一个标签或只剩一个标签或选择标签的后一个标签是固定标签禁用
+          disabled: (view: TagView) => view.path === tagViews.value[tagViews.value.length - 1].path || tagViews.value.length === 1 || tagViews.value[useTagsView.getViewIndex(view) + 1].meta?.fixed,
+          fn: (view: TagView) => closeRightTags(view)
+        },
+        {
+          label: '关闭其它',
+          // 剩余一个标签或剩余标签全部是固定禁用
+          disabled: (view: TagView) => tagViews.value.length <= 1 || useTagsView.otherFixed(view) || useTagsView.allFixed,
+          fn: (view: TagView) => closeOtherTags(view)
+        },
+        {
+          label: '关闭所有',
+          // 剩余一个标签或剩余标签全部是固定禁用
+          disabled: () => tagViews.value.length <= 1 || useTagsView.allFixed,
+          fn: () => closeAllTags()
+        }
+      ]
     }
-    let wrap = scrollbarRef.value.wrap$
-    wrap.scrollLeft = wrap.scrollLeft + e.deltaY
+  }
+
+  // 全屏内容
+  const fullScreenContent = (view: TagView) => {
+    router.push(view.path as string)
+
+    EventBus.emit('FullScreenAppLayoutMain')
+  }
+
+  // 刷新标签
+  const refreshTag = (view: TagView) => {
+    useTagsView.refreshTagView(view)
+  }
+
+  // 关闭所有
+  const closeAllTags = () => {
+    const targetTag = useTagsView.closeAllTagViews()
+
+    router.push(targetTag.path as string)
+  }
+
+  // 关闭其它
+  const closeOtherTags = (view: TagView) => {
+    useTagsView.closeOtherTagViews(view)
+
+    router.push(view.path as string)
+  }
+
+  // 关闭左侧标签
+  const closeLeftTags = (view: TagView) => {
+    const targetTag = useTagsView.closeLeftTagViews(view)
+
+    router.push(targetTag.path as string)
+  }
+
+  // 关闭右侧标签
+  const closeRightTags = (view: TagView) => {
+    const targetTag = useTagsView.closeRightTagViews(view)
+
+    router.push(targetTag.path as string)
+  }
+
+  // 关闭选中标签
+  const closeTag = (view:TagView) => {
+    const targetTag = useTagsView.closeTagView(view)
+
+    router.push(targetTag.path as string)
   }
 
   // 获取固定标签
@@ -282,107 +213,74 @@
   const initTags = () => {
     const fixedTags = getFixedTags(routes.value)
 
-    // 对固定标签进行倒叙添加
-    // 正序会将后面的标签添加在前面
-    fixedTags.reverse().forEach(item => {
-      tagsView.addView(item)
+    fixedTags.forEach(item => {
+      useTagsView.addView(item)
     })
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     initTags()
   })
 </script>
 
 <style scoped lang="less">
+
   .tags-view {
-    height: 34px;
-    width: inherit;
+    height: @tags-view-height;
     position: relative;
-    background: #fff;
-    border-bottom: 1px solid #d8dce5;
-    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
+    white-space: nowrap;
+    background: transparent;
+    padding: 4px 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
 
-    .scroll-container {
-      width: inherit;
-      height: inherit;
-      white-space: nowrap;
-      position: relative;
-      overflow: hidden;
-      padding: 5px 0;
-      :deep(.el-scrollbar__bar) {
-        width: 0!important;
-        height: 0!important;
-      }
-
-      :deep(.el-scrollbar__view) {
-        height: 100%;
-      }
+    /* 隐藏滚动条 */
+    scrollbar-width: none; /* firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+    &::-webkit-scrollbar {
+      display: none;  /* Chrome Safari */
     }
 
     .tag {
       display: inline-block;
+      box-sizing: border-box;
+      list-style: none;
+      align-items: center;
       text-decoration: none;
-      height: inherit;
-      margin-left: 5px;
-      padding: 0 8px;
-      border: 1px solid #d8dce5;
-      border-radius: 5px;
-      background: #ffffff;
-      color: #000000;
+      white-space: nowrap;
       font-size: 12px;
-      line-height: 24px;
+      padding: 0 4px;
+      margin: 0 0 0 4px;
+
+      border: 1px solid #d8dce5;
+      border-radius: 3px;
+      background: transparent;
+      color: #000000;
 
       &:hover {
-        //color: #409eff;
+        color: #409eff;
       }
 
-      .close {
-        margin-left: 5px;
+      &:last-child {
+        margin-right: 4px;
+      }
+
+      .icon {
+        margin-left: 4px;
       }
     }
 
     .tag-active:extend(.tags-view .tag all) {
-      background: #409eff;
+
+      border: 1px solid transparent;
+      background-color: @activate-background-color;
       color: #ffffff;
-      border: none;
+
+      &:hover {
+        color: #ffffff;
+      }
     }
 
-    .right-key-menu {
-      .menu-main {
-        list-style: none;
-        margin: 0 8px;
-        padding: 0;
-
-        width: 100px;
-        font-size: 12px;
-        line-height: 28px;
-        text-align: left;
-        color: #444040;
-        background-color: #fff;
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        border-radius: 4px;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-        white-space: nowrap;
-        z-index: 1000;
-      }
-      .menu-main:not(:last-child) {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-      }
-      .menu-main li {
-        list-style: none;
-        margin: 0;
-        padding: 0 8px;
-      }
-      .menu-main li:hover {
-        cursor: pointer;
-        background: #66b1ff;
-        border-color: #66b1ff;
-        color: #fff;
-      }
-    }
   }
 
 </style>

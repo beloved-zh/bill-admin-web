@@ -21,7 +21,7 @@
         <el-button class="form-svg-btn" @click="handleExport">
           <svg-icon name="export" />导出
         </el-button>
-        <el-button class="form-btn" @click="showPanel = !showPanel" v-if="showPanelBtn">
+        <el-button class="form-btn" @click="handleMore" v-if="showPanelBtn">
           <svg-icon :name="showPanel ? 'up' : 'down'" />
         </el-button>
       </div>
@@ -67,10 +67,16 @@
   const emit = defineEmits<{
     (e: 'queryCallback', form: FormInstance): void,
     (e: 'exportCallback', form: FormInstance): void,
+    (e: 'clickMoreCallback', showPanel: boolean): void,
   }>()
 
   const handleReset = () => {
     formRef.value!.resetFields()
+  }
+  
+  const handleMore = () => {
+    showPanel.value = !showPanel.value
+    emit('clickMoreCallback', showPanel.value)
   }
   
   const handleQuery = () => {

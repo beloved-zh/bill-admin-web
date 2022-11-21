@@ -1,66 +1,62 @@
 <template>
-  <el-form
-      class="login-form"
-      label-position="left"
-  >
-    <el-form-item prop="username">
-      <el-input
-          placeholder="请输入手机号"
-          name="username"
-          type="text"
-          tabindex="1"
-      >
-        <template #prefix>
-          <span>
-            <svg-icon name="phone" size="14px" ></svg-icon>
-          </span>
+  <t-form class="login-form" :label-width="0" >
+    <t-form-item name="phone" >
+      <t-input clearable placeholder="请输入手机号">
+        <template #prefix-icon>
+          <my-icon name="icon-phone" />
         </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item prop="password">
-      <el-input
-          placeholder="请输入短信验证码"
-          name="password"
-          type="password"
-          tabindex="2"
-          :show-password="true"
-      >
-        <template #prefix>
-          <svg-icon name="valid-code" size="14px" ></svg-icon>
+      </t-input>
+    </t-form-item>
+    <t-form-item name="code" >
+      <t-input clearable placeholder="请输入验证码">
+        <template #prefix-icon>
+          <my-icon name="icon-valid-code" />
         </template>
-        <template #append>
-          <el-link class="forgot-password" :underline="false" type="primary" @click="handleSMSCode()">获取短信验证码</el-link>
+        <template #suffix>
+          <t-link theme="primary" hover="color" @click="handleCaptcha">获取验证码</t-link>
         </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item>
-      <div class="login-options w-10">
-        <el-checkbox class="auto-login" label="下次自动登录" />
+      </t-input>
+    </t-form-item>
+    <t-form-item>
+      <div class="login-options">
+        <t-link class="forgot-password" theme="default" hover="color">忘记密码？</t-link>
+        <t-link theme="primary" hover="color">新用户账号注册</t-link>
       </div>
-    </el-form-item>
-    <el-form-item>
-      <el-button class="w-10" type="primary">登录 / 注册</el-button>
-    </el-form-item>
-  </el-form>
+    </t-form-item>
+    <t-form-item>
+      <t-button theme="primary" type="submit" block>登录</t-button>
+    </t-form-item>
+  </t-form>
 </template>
 
 <script setup lang="ts">
 
-let handleSMSCode = () => {
+  defineOptions({
+    name: 'ValidCodeLogin'
+  })
 
-}
+  const handleCaptcha = () => {
+    // xx秒后重新获取
+    infoMessage('获取验证码')
+  }
+
 
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/index.less');
+  @import url('@assets/styles/base.less');
   .login-form {
-    padding: 0 10px;
-    width: 380px;
+    padding: 10px;
 
-    .login-options:extend(.flex-row-center) {
+    .login-options {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
       justify-content: space-between;
-    }
 
+      .forgot-password {
+        color: #6c7d8f;
+      }
+    }
   }
 </style>

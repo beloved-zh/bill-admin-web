@@ -1,5 +1,10 @@
 import 'vue-router'
 
+export interface Breadcrumb {
+    path: string
+    title: string;
+}
+
 // 扩展 RouteMeta 类型
 declare module 'vue-router' {
     interface RouteMeta {
@@ -8,7 +13,7 @@ declare module 'vue-router' {
         hidden?: boolean,
         fixed?: boolean,
         keepAlive?: boolean,
-        breadcrumbs?: string[],
+        breadcrumbs?: Breadcrumb[],
         iframe?: string
     }
 }

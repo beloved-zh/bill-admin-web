@@ -1,67 +1,73 @@
 <template>
-  <el-menu-item v-if="!menuItem.children || menuItem.children.length === 0" :index="basePath" @click="handleMenuItemClick">
-    <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="small" />
+  <t-menu-item
+    v-if="!menu.children || menu.children.length === 0"
+    :value="path"
+    @click="handleMenuItemClick(path)"
+  >
+    <template #icon >
+      <my-icon v-if="menu.meta.icon" :name="menu.meta.icon" />
+    </template>
+    {{ menu.meta.title }}
+  </t-menu-item>
+  <t-submenu
+    v-else
+    :value="path"
+  >
+    <template #icon>
+      <my-icon v-if="menu.meta.icon" :name="menu.meta.icon" />
+    </template>
     <template #title>
-      <span>{{menuItem.meta.title}}</span>
+      {{ menu.meta.title }}
     </template>
-  </el-menu-item>
-  <el-sub-menu v-else :index="basePath">
-    <template #title>
-      <svg-icon :class="{icon: open}" v-if="menuItem.meta.icon" :name="menuItem.meta.icon" size="20px" />
-      <span>{{menuItem.meta.title}}</span>
+    <template v-for="item in menu.children" :key="resolvePath(path, item.path)">
+      <tree-item v-if="!item.meta.hidden" :menu="item" :path="resolvePath(path, item.path)" :open="open" />
     </template>
-    <template v-for="item in menuItem.children" :key="resolvePath(props.basePath, item.path)">
-      <tree-item v-if="!item.meta.hidden" :menu-item="item" :base-path="resolvePath(props.basePath, item.path)" :open="open" />
-    </template>
-  </el-sub-menu>
-
+  </t-submenu>
 </template>
 
 <script setup lang="ts">
-  import type { MenuItemRegistered } from 'element-plus'
-  import SvgIcon from '@components/SvgIcon/index.vue'
+  defineOptions({
+    name: 'TreeItem'
+  })
+
   import { isExternalLink, resolvePath } from '@utils/index'
   import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
   import { MenuTree } from '@api/auth/types'
   import { useRouter } from 'vue-router'
   import useStore from '@store/index'
 
-  defineOptions({
-    name: 'TreeItem'
-  })
-
   const props = defineProps<{
-    menuItem: MenuTree,
-    basePath: string,
+    menu: MenuTree,
+    path: string,
     open: boolean
   }>()
 
   const router = useRouter()
 
-  const { app } = useStore()
-  
-  const handleMenuItemClick = (item:MenuItemRegistered) => {
-    if (isExternalLink(item.index)) {
-      if (app.confirmLeave) {
+  const { useApp } = useStore()
+
+  const handleMenuItemClick = (path: string) => {
+    if (isExternalLink(path)) {
+      if (useApp.confirmLeave) {
         const routeData = router.resolve({
           path: "/confirm-leave",
           query: {
-            target: item.index
+            target: path
           }
         })
         window.open(routeData.href)
       } else {
-        window.open(item.index)
+        window.open(path)
       }
     } else {
-      router.push(item.index)
+      router.push(path)
     }
   }
 
 </script>
 
 <style scoped lang="less">
-  .icon {
-    margin-right: 10px;
-  }
+.icon {
+  margin-right: 10px;
+}
 </style>

@@ -1,8 +1,8 @@
 <template>
-  <el-header class="app-header">
+  <t-header class="app-header">
     <NavBar/>
     <TagsView/>
-  </el-header>
+  </t-header>
 </template>
 
 <script setup lang="ts">
@@ -12,13 +12,11 @@
   defineOptions({
     name: 'Header'
   })
+
 </script>
 
 <style scoped lang="less">
   .app-header {
-    width: 100%;
-    height: 84px;
-    padding: 0;
-    background-color: #ffffff;
+    height: @nav-bar-height + @tags-view-height;
   }
 </style>

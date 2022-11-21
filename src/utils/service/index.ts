@@ -2,8 +2,9 @@ import Request from './request'
 import type { AxiosResponse } from 'axios'
 import type { RequestConfig } from './types'
 import { MethodEnum, ContentTypeEnum } from '@enums/httpEnums'
-import { ElMessage } from 'element-plus'
 import useStore from '@/store'
+import { errorMessage } from '@/hooks/useMessage'
+
 
 interface MyResponse<T = any> {
     code: number
@@ -20,9 +21,9 @@ const defaultRequest = new Request({
     interceptors: {
         // 请求拦截器
         requestInterceptors: (config: RequestConfig<MyResponse>) => {
-            const { app, user } = useStore();
-            if (user.token && config.headers) {
-                config.headers[app.tokenHeader] = user.token
+            const { useApp, useUser } = useStore();
+            if (useUser.token && config.headers) {
+                config.headers[useApp.tokenHeader] = useUser.token
             }
             return config
         },
@@ -36,19 +37,13 @@ const defaultRequest = new Request({
             if (code === 2000) {
                 return data
             } else {
-                ElMessage({
-                    message: message || '系统内部错误',
-                    type: 'error'
-                })
+                errorMessage(message || '系统内部错误')
                 return Promise.reject(new Error(message || '系统内部错误'))
             }
         },
         responseInterceptorsCatch: err => {
             const { message } = err.response.data
-                ElMessage({
-                message: message || '系统内部错误',
-                type: 'error'
-            })
+            errorMessage(message || '系统内部错误')
             return Promise.reject(new Error(message || '系统内部错误'))
         }
     }

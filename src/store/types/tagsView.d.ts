@@ -5,6 +5,7 @@ export interface TagView extends Partial<RouteLocationNormalizedLoaded> {
 }
 
 export interface TagsViewState {
-    tagViews: TagView[];
-    cachedViews: TagView[];
+    activeTagView: TagView;
+    fixedTagViews: TagView[];
+    canCloseTagViews: TagView[];
 }

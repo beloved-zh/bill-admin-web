@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import type { UserState } from '../types/user'
 import type { LoginFormData, UserInfo } from '@api/auth/types'
-import { localStorage, sessionStorage } from '@/utils/storage'
+import { localStorage } from '@/utils/storage'
 import { login, getUserInfo } from '@/api/auth'
 import useAppStore from '../modules/app'
-
-const DEFAULT_AVATAR:string = 'https://joeschmoe.io/api/v1/random'
 
 const useUserStore = defineStore({
     id: 'user',
@@ -21,16 +19,13 @@ const useUserStore = defineStore({
     }),
     getters: {
         hasInfo: (state):boolean => {
-            if (state.userInfo.userName) {
+            if (state.token && state.userInfo.userName) {
                 return true
             }
             return false
         },
         roles: (state):string[] => {
             return state.userInfo.roles
-        },
-        avatar: (state):string => {
-            return state.userInfo.avatar || DEFAULT_AVATAR
         }
     },
     actions: {
@@ -41,11 +36,7 @@ const useUserStore = defineStore({
                     const { header, tokenPrefix, token } = res
                     const finalToken = tokenPrefix + token
                     app.setTokenHeader(header)
-                    if (app.autoLogin) {
-                        localStorage.set(header, finalToken)
-                    } else {
-                        sessionStorage.set(header, finalToken)
-                    }
+                    localStorage.set(header, finalToken)
                     this.token = finalToken;
 
                     resolve(finalToken)
@@ -69,7 +60,6 @@ const useUserStore = defineStore({
         },
         resetToken() {
             localStorage.remove(useAppStore().tokenHeader)
-            sessionStorage.remove(useAppStore().tokenHeader)
             this.$reset()
         }
     }

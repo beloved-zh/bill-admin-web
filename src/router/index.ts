@@ -18,25 +18,25 @@ const router = createRouter({
 // @ts-ignore 忽略 form 未使用提示
 router.beforeEach(async (to, from, next) => {
   NProgress.start()
-  const { user, menu } = useStore();
-  if (user.token) {
+  const { useUser, useMenu } = useStore()
+  if (useUser.token) {
     if (to.path === '/login') {
       next({ path: '/' })
       NProgress.done()
     } else {
-      if (user.hasInfo) {
+      if (useUser.hasInfo) {
         next()
         NProgress.done()
       } else {
         try {
-          await user.getUserInfo()
-          const asyncRoutes:RouteRecordRaw[] = await menu.getMenuTree()
+          await useUser.getUserInfo()
+          const asyncRoutes:RouteRecordRaw[] = await useMenu.getMenuTree()
           asyncRoutes.forEach(route => router.addRoute(route))
           next({ ...to, replace: true })
           NProgress.done()
         } catch (err) {
           // 移除 token 并跳转登录页
-          await user.resetToken()
+          await useUser.resetToken()
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }

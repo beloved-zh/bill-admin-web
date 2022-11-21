@@ -1,29 +1,35 @@
 <template>
   <div class="navbar">
     <div class="left-content">
-      <svg-icon class="sidebar-control cursor-pointer" :name="sidebar.open ? 'shrink' : 'unfold'" size="small" @click="toggleSidebar" />
-      <el-breadcrumb separator="/">
+      <my-icon class="cursor-pointer item" :name="sidebar.open ? 'icon-shrink' : 'icon-unfold'" size="large" @click="toggleSidebar" />
+      <t-breadcrumb>
         <template v-for="item in breadcrumbs">
-          <el-breadcrumb-item>{{ item }}</el-breadcrumb-item>
+          <t-breadcrumb-item :disabled="true"> {{ item.title }} </t-breadcrumb-item>
         </template>
-      </el-breadcrumb>
+      </t-breadcrumb>
     </div>
     <div class="right-content">
-      <svg-icon class="item cursor-pointer" name="search" size="small" />
-      <svg-icon class="item cursor-pointer" @click="toggleDark" :name="isDark ? 'night' : 'white'" size="small" />
-      <svg-icon class="item cursor-pointer" @click="toggle" :name="isFullscreen ? 'cancel-full-screen': 'full-screen'" size="small" />
-      <svg-icon class="item cursor-pointer" name="setup" size="small" />
-      <el-avatar class="item cursor-pointer" :size="30" :src="avatar" />
+      <my-icon class="item cursor-pointer" name="icon-search" size="large" />
+      <my-icon class="item cursor-pointer" :name="isDark ? 'icon-night' : 'icon-white'" size="large" @click="toggleDark" />
+      <my-icon class="item cursor-pointer" :name="isFullscreen ? 'icon-cancel-full-screen' : 'icon-full-screen'" size="large" @click="toggle" />
+      <my-icon class="item cursor-pointer" name="icon-setup" size="large" />
+      <template v-if="useUser.userInfo.avatar">
+        <t-avatar class="item cursor-pointer" size="medium" :image="useUser.userInfo.avatar" />
+      </template>
+      <template  v-else>
+        <t-avatar class="item cursor-pointer" size="medium" >{{ useUser.userInfo.userName }}</t-avatar>
+      </template>
     </div>
   </div>
 
 </template>
 
 <script setup lang="ts">
-  import SvgIcon from '@components/SvgIcon/index.vue'
+  import type { Breadcrumb } from '@router/types'
   import { useRoute } from 'vue-router'
   import { useDark, useToggle , useFullscreen } from '@vueuse/core'
   import useStore from '@store/index'
+
 
   defineOptions({
     name: 'NavBar'
@@ -39,48 +45,40 @@
 
   const { isFullscreen, toggle } = useFullscreen()
 
-  const { app, user } = useStore()
+  const { useApp, useUser } = useStore()
 
   const toggleSidebar = () => {
-    app.toggleSidebar()
+    useApp.toggleSidebar()
   }
   
-  const sidebar = computed(() => app.sidebar)
+  const sidebar = computed(() => useApp.sidebar)
 
-  const avatar = computed<string>(() => user.avatar)
-
-  let breadcrumbs = ref<string[]>([])
-
-  watch(route, () => {
-    breadcrumbs.value = route.meta.breadcrumbs as string[]
-  }, {
-    immediate: true
-  })
+  const breadcrumbs = computed<Breadcrumb[]>(() => route.meta.breadcrumbs as Breadcrumb[])
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/base.less');
+
   .navbar {
-    &:extend(.flex-row-center);
+    height: @nav-bar-height;
+    display: flex;
     justify-content: space-between;
-    width: inherit;
-    height: 50px;
+    align-items: center;
     overflow: hidden;
     background: #fff;
-    box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+    //box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+    border-bottom: 1px solid var(--td-component-stroke);
+    padding: 4px 14px;
+
     .left-content {
-      &:extend(.flex-row-center);
-      .sidebar-control {
-        margin: 0 14px;
-      }
-    }
-    .right-content {
-      &:extend(.flex-row-center);
+      display: flex;
+      align-items: center;
       .item {
         margin-right: 14px;
       }
-      span {
-        color: #606266;
+    }
+    .right-content {
+      .item {
+        margin-left: 14px;
       }
     }
   }
