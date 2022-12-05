@@ -1,110 +1,121 @@
 <template>
-  <el-form ref="formRef" v-bind="attrs">
-    <slot :handleQuery="handleQuery"></slot>
-    <div v-show="showPanel">
-      <slot name="hidePanel" :handleQuery="handleQuery" />
-    </div>
-    <div class="operate-panel">
-      <div class="operate">
-        <slot name="operate" :handleQuery="handleQuery" />
-      </div>
-      <div class="default-operate">
-        <el-button type="primary" class="form-svg-btn" @click="handleQuery">
-          <svg-icon name="search" />搜索
-        </el-button>
-        <el-button class="form-svg-btn" @click="handleReset">
-          <svg-icon name="reset" />重置
-        </el-button>
-        <el-button class="form-svg-btn" @click="showImport = true">
-          <svg-icon name="import" />导入
-        </el-button>
-        <el-button class="form-svg-btn" @click="handleExport">
-          <svg-icon name="export" />导出
-        </el-button>
-        <el-button class="form-btn" @click="handleMore" v-if="showPanelBtn">
-          <svg-icon :name="showPanel ? 'up' : 'down'" />
-        </el-button>
-      </div>
-    </div>
-  </el-form>
-  <el-dialog
-      v-model="showImport"
-      title="模板导入"
+  <t-form
+      ref="formRef"
+      class="data-form"
+      v-bind="attrs"
+      @submit="handleQuery"
   >
-    <el-upload
-        :limit="1"
-        :auto-upload="false"
-    >
-      <template #trigger>
-        <el-button type="primary">选择文件</el-button>
-      </template>
-    </el-upload>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button type="primary" @click="showImport = false">确认上传</el-button>
-      </span>
-    </template>
-  </el-dialog>
+    <t-row :gutter="gutter">
+      <slot />
+    </t-row>
+    <t-row v-show="showPanel" :gutter="gutter">
+      <slot name="hidePanel" />
+    </t-row>
+    <t-row :gutter="gutter" class="operate">
+      <t-col :span="6" class="more-operate">
+        <t-space>
+          <slot name="moreOperate" />
+        </t-space>
+      </t-col>
+      <t-col :span="6" class="default-operate">
+        <t-space>
+          <t-button theme="primary" type="submit">
+            <template #icon><my-icon name="icon-search" /></template>搜索
+          </t-button>
+          <t-button theme="default" variant="outline" type="reset">
+            <template #icon><my-icon name="icon-reset" /></template>重置
+          </t-button>
+          <t-button theme="default" variant="outline">
+            <template #icon><my-icon name="icon-import" /></template>导入
+          </t-button>
+          <t-button theme="default" variant="outline">
+            <template #icon><my-icon name="icon-export" /></template>导出
+          </t-button>
+          <t-button theme="default" variant="outline" @click="handleMore">
+            <template #icon><my-icon :name="showPanel ? 'icon-up' : 'icon-down'" /></template>
+          </t-button>
+        </t-space>
+      </t-col>
+    </t-row>
+  </t-form>
 </template>
 
 <script setup lang="ts">
-  import type { FormInstance } from 'element-plus'
+  import type { Form, GutterObject } from 'tdesign-vue-next'
 
   defineOptions({
     name: 'DataForm',
     inheritAttrs: false
   })
 
+  type Props = {
+    rowGutter?: number | GutterObject | Array<GutterObject | number>
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    rowGutter: () => [16, 16]
+  })
+
   const attrs = useAttrs()
 
-  const formRef = ref<FormInstance>()
-
-  const showPanelBtn = computed<boolean>(() => !!useSlots().hidePanel)
-  let showPanel = ref<boolean>(false)
-
-  let showImport = ref<boolean>(false)
-
   const emit = defineEmits<{
-    (e: 'queryCallback', form: FormInstance): void,
-    (e: 'exportCallback', form: FormInstance): void,
-    (e: 'clickMoreCallback', showPanel: boolean): void,
+    (e: 'queryCallback'): void
   }>()
 
-  const handleReset = () => {
-    formRef.value!.resetFields()
-  }
-  
+  const formRef = ref<InstanceType<typeof Form>>()
+  let showPanel = ref<boolean>(false)
+
+  const gutter = computed<Array<GutterObject | number>>(() => {
+    if (props.rowGutter instanceof Array<GutterObject | number>) {
+      if (props.rowGutter.length === 0) {
+        return [16, 16]
+      } else if (props.rowGutter.length === 1) {
+        return [...props.rowGutter, 16]
+      } else {
+        return props.rowGutter
+      }
+    } else {
+      return [props.rowGutter, 16]
+    }
+  })
+
+  const formRowGap = computed(() => `${gutter.value[1]}px`)
+
   const handleMore = () => {
     showPanel.value = !showPanel.value
-    emit('clickMoreCallback', showPanel.value)
   }
-  
-  const handleQuery = () => {
-    formRef.value!.validate((valid) => {
-      if (!valid) {
-        return
-      }
-      emit('queryCallback', formRef.value!)
-    })
-  }
-  
-  const handleExport = () => {
-    emit('exportCallback', formRef.value!)
+
+  const handleQuery = ({ validateResult }) => {
+    if (validateResult !== true) {
+      return
+    }
+    emit('queryCallback')
   }
 
   defineExpose({
     formRef
   })
+
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/base.less');
 
-  .operate-panel {
-    &:extend(.flex-row-center);
-    justify-content: space-between;
-    :deep(.el-form-item__content) {
+  .data-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: v-bind(formRowGap);
+  }
 
+  .operate {
+    margin-bottom: v-bind(formRowGap);
+
+    .more-operate {
+      text-align: left;
+    }
+
+    .default-operate {
+      text-align: right;
     }
   }
+
 </style>

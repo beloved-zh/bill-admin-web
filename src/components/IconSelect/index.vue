@@ -1,31 +1,29 @@
 <template>
-  <el-popover :visible="visible" :width="inputWidth">
-    <template #reference>
-      <el-input ref="iconInputRef" v-model="iconName"
-                :placeholder="placeholder" clearable
-                @focus="visible = true"
-                @blur="visible = false">
-        <template #prefix>
-          <svg-icon :name="iconName || 'search'" size="18px" />
-        </template>
-      </el-input>
+  <t-select
+      ref="selectRef"
+      class="icon-select"
+      v-model="iconName"
+      :placeholder="placeholder"
+      :popup-props="{
+        overlayInnerStyle: {
+          'width': `${popupWidth}px`,
+          'max-height': popupMaxHeight
+        }
+      }" >
+    <t-option v-for="item in iconList" :key="item.icon_id" :label="item.font_class" :value="item.font_class" style="display: inline-block;">
+      <my-icon :name="item.font_class" :size="iconSize" />
+    </t-option>
+    <template #prefixIcon>
+      <my-icon :name="iconName" />
     </template>
-    <el-scrollbar height="300px">
-      <div class="icon-list">
-        <el-tooltip v-for="icon in iconFont.glyphs" :key="icon.icon_id" :content="icon.name" placement="top">
-          <div class="icon-item" @click="handleSelected(icon)">
-            <svg-icon :name="icon.font_class" size="40px" :class="iconName === icon.font_class ? 'selected-svg' : ''" />
-          </div>
-        </el-tooltip>
-      </div>
-    </el-scrollbar>
-  </el-popover>
+  </t-select>
 </template>
 
 <script setup lang="ts">
-  import type { IconFont, IconItem } from '@api/common/types'
-  import type { ElInput } from 'element-plus/es'
+  import type { Select } from 'tdesign-vue-next'
+  import type { IconFont } from '@api/common/types'
   import { getIconFontJson } from '@api/common'
+  import { useResizeObserver } from '@vueuse/core'
 
   defineOptions({
     name: 'IconSelect'
@@ -33,25 +31,41 @@
 
   type Props = {
     modelValue: string,
-    placeholder?: string
+    placeholder?: string,
+    popupMaxHeight?: string,
+    iconSize?: string
   }
 
   const props = withDefaults(defineProps<Props>(), {
     modelValue: '',
-    placeholder: '点击选择图标'
+    placeholder: '点击选择图标',
+    popupMaxHeight: '200px',
+    iconSize: 'large'
   })
 
-  const visible = ref(false)
+  const emit = defineEmits(['update:modelValue'])
+
+  const popupWidth = ref(0)
+  const selectRef = ref<InstanceType<typeof Select>>()
+  useResizeObserver(selectRef, (entries) => {
+    const entry = entries[0]
+    const { width } = entry.contentRect
+    popupWidth.value = width
+  })
 
   let iconName = ref('')
 
-  const iconInputRef = ref<InstanceType<typeof ElInput>>()
+  watch(() => props.modelValue, () => {
+    iconName.value = props.modelValue
+  }, {
+    deep: true,
+    immediate: true
+  })
 
-  let inputWidth = computed(() => {
-    if (!iconInputRef.value) {
-      return 300
-    }
-    return iconInputRef.value.$el.clientWidth
+  watch(iconName, () => {
+    emit('update:modelValue', iconName)
+  }, {
+    deep: true
   })
 
   let iconFont = ref<IconFont>({
@@ -62,25 +76,12 @@
     description: '',
     glyphs: []
   })
-  
-  const handleSelected = (icon:IconItem) => {
-    iconName.value = icon.font_class
-    visible.value = false
-  }
 
-  const emit = defineEmits(['update:modelValue'])
-
-  watch(iconName, () => {
-    emit('update:modelValue', iconName)
-  }, {
-    deep: true
-  })
-
-  watch(() => props.modelValue, () => {
-    iconName.value = props.modelValue
-  }, {
-    deep: true,
-    immediate: true
+  const iconList = computed(() => {
+    return iconFont.value.glyphs.map(item => {
+      item.font_class = `${iconFont.value.css_prefix_text}${item.font_class}`
+      return item
+    })
   })
 
   onMounted(() => {
@@ -88,24 +89,9 @@
       iconFont.value = data
     })
   })
+
 </script>
 
 <style scoped lang="less">
-  @import url('@assets/styles/base.less');
-  .icon-list {
-    &:extend(.flex-row-center);
-    justify-content: flex-start;
-    flex-wrap: wrap;
 
-    .icon-item {
-      margin: 4px;
-      text-align: center;
-      border: 1px solid #dcdfe6;
-      padding: 4px;
-      .selected-svg {
-        border: 2px solid #ff0000;
-        border-radius: 4px;
-      }
-    }
-  }
 </style>

@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3505787 */
-  src: url('iconfont.woff2?t=1663294943501') format('woff2'),
-       url('iconfont.woff?t=1663294943501') format('woff'),
-       url('iconfont.ttf?t=1663294943501') format('truetype'),
-       url('iconfont.svg?t=1663294943501#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1669876294186') format('woff2'),
+       url('iconfont.woff?t=1669876294186') format('woff'),
+       url('iconfont.ttf?t=1669876294186') format('truetype'),
+       url('iconfont.svg?t=1669876294186#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,18 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-close:before {
+  content: "\eca0";
+}
+
+.icon-jiankong:before {
+  content: "\e620";
+}
+
+.icon-jiankong-copy:before {
+  content: "\eb9a";
 }
 
 .icon-export:before {
@@ -36,10 +48,6 @@
 
 .icon-up:before {
   content: "\e603";
-}
-
-.icon-search-form:before {
-  content: "\e86e";
 }
 
 .icon-reset:before {
@@ -72,10 +80,6 @@
 
 .icon-search:before {
   content: "\e62f";
-}
-
-.icon-close:before {
-  content: "\eb6a";
 }
 
 .icon-unfold:before {
@@ -112,6 +116,10 @@
 
 .icon-password:before {
   content: "\e60c";
+}
+
+.icon-dashboard-copy:before {
+  content: "\eb9b";
 }
 
 .icon-dashboard:before {

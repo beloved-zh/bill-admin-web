@@ -1,5 +1,5 @@
 import type { MenuTree, MenuForm } from '@api/system/menu/types'
-import type { FormRules } from 'element-plus'
+import {FormRule} from "tdesign-vue-next";
 
 /**
  * 操作表单
@@ -9,5 +9,5 @@ export interface PanlForm {
     title: string;
     parentMenu: MenuTree | null;
     form: MenuForm,
-    formRules: FormRules
+    rules: {[field in keyof MenuForm]?: FormRule[]}
 }

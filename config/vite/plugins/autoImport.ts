@@ -32,7 +32,7 @@ export const AutoImportDeps = () => {
     resolvers: [
       VueUseComponentsResolver(),
       TDesignResolver({
-        // importStyle: true,
+        importStyle: true,
         library: 'vue-next',
         resolveIcons: true
       })

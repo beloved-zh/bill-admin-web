@@ -62,6 +62,9 @@
 
   .app-sidebar {
 
+    height: 100vh;
+    overflow-y: auto;
+
     :deep(.t-default-menu) {
       border-right: 1px solid var(--td-component-stroke);
     }

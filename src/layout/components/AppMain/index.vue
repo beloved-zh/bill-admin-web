@@ -41,10 +41,10 @@
 
 <style scoped lang="less">
   .app-main {
-    width: 100%;
-    height: 100%;
+    //&:extend(.scrollbar);
     padding: 8px;
-    //background-color: #ffffff;
+    max-height: calc(~"100vh - @{nav-bar-height} - @{tags-view-height}");
+    overflow-y: auto;
   }
 
 </style>
