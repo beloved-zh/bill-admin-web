@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
-import { useDark, useFullscreen, useToggle } from "@vueuse/core";
-import type { Breadcrumb } from "@/router/types";
+import { useRoute } from 'vue-router'
+import { useDark, useFullscreen, useToggle } from '@vueuse/core'
+import type { Breadcrumb } from '@/router/types'
 
-import useStore from "@/store/index";
+import useStore from '@/store/index'
 
 defineOptions({
-  name: "NavBar",
-});
+  name: 'NavBar'
+})
 
-const route = useRoute();
+const route = useRoute()
 
-const isDark = useDark();
+const isDark = useDark()
 
 const toggleDark = () => {
-  useToggle(isDark);
-};
+  useToggle(isDark)
+}
 
-const { isFullscreen, toggle } = useFullscreen();
+const { isFullscreen, toggle } = useFullscreen()
 
-const { useApp, useUser } = useStore();
+const { useApp, useUser } = useStore()
 
 const toggleSidebar = () => {
-  useApp.toggleSidebar();
-};
+  useApp.toggleSidebar()
+}
 
-const sidebar = computed(() => useApp.sidebar);
+const sidebar = computed(() => useApp.sidebar)
 
 const breadcrumbs = computed<Breadcrumb[]>(
   () => route.meta.breadcrumbs as Breadcrumb[]
-);
+)
 </script>
 
 <template>

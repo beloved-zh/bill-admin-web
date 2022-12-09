@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import AppSidebar from "./components/AppSidebar/index.vue";
-import AppHeader from "./components/AppHeader/index.vue";
-import AppMain from "./components/AppMain/index.vue";
-import variables from "@/assets/styles/variables.module.less";
-import useStore from "@/store/index";
+import AppSidebar from './components/AppSidebar/index.vue'
+import AppHeader from './components/AppHeader/index.vue'
+import AppMain from './components/AppMain/index.vue'
+import variables from '@/assets/styles/variables.module.less'
+import useStore from '@/store/index'
 
 defineOptions({
-  name: "Layout",
-});
+  name: 'Layout'
+})
 
-const { useApp } = useStore();
+const { useApp } = useStore()
 
-const menuWidth = computed(() =>
-  useApp.sidebar.open
-    ? variables["menu-unfold-width"]
-    : variables["menu-fold-width"]
-);
+const menuWidth = computed(() => useApp.sidebar.open ? variables['menu-unfold-width'] : variables['menu-fold-width'])
 </script>
 
 <template>

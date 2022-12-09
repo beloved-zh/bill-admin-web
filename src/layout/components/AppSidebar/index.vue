@@ -1,42 +1,42 @@
 <script setup lang="ts">
-import type { TdMenuInterface } from "tdesign-vue-next/lib/menu/const";
-import type { MenuValue } from "tdesign-vue-next/lib/menu/type";
-import { useRoute } from "vue-router";
-import TreeItem from "./components/TreeItem/index.vue";
-import variables from "@/assets/styles/variables.module.less";
-import useStore from "@/store/index";
-import type { MenuTree } from "@/api/auth/types";
-import { resolveBasePath } from "@/utils/index";
+import type { TdMenuInterface } from 'tdesign-vue-next/lib/menu/const'
+import type { MenuValue } from 'tdesign-vue-next/lib/menu/type'
+import { useRoute } from 'vue-router'
+import TreeItem from './components/TreeItem/index.vue'
+import variables from '@/assets/styles/variables.module.less'
+import useStore from '@/store/index'
+import type { MenuTree } from '@/api/auth/types'
+import { resolveBasePath } from '@/utils/index'
 
 defineOptions({
-  name: "Sidebar",
-});
+  name: 'Sidebar'
+})
 
-const menuRef = ref<TdMenuInterface>();
+const menuRef = ref<TdMenuInterface>()
 
-const expandedMenus = ref<MenuValue[]>();
+const expandedMenus = ref<MenuValue[]>()
 
-const route = useRoute();
+const route = useRoute()
 
-const { useApp, useMenu } = useStore();
+const { useApp, useMenu } = useStore()
 
-const menus = computed<MenuTree[]>(() => useMenu.menus);
-const sidebar = computed(() => useApp.sidebar);
-const activeMenu = computed(() => route.path);
+const menus = computed<MenuTree[]>(() => useMenu.menus)
+const sidebar = computed(() => useApp.sidebar)
+const activeMenu = computed(() => route.path)
 const menuWidth = computed(() => [
-  variables["menu-unfold-width"],
-  variables["menu-fold-width"],
-]);
+  variables['menu-unfold-width'],
+  variables['menu-fold-width']
+])
 
 watch(
   route,
   () => {
-    expandedMenus.value = route.meta.breadcrumbs!.map((item) => item.path);
+    expandedMenus.value = route.meta.breadcrumbs!.map(item => item.path)
   },
   {
-    immediate: true,
+    immediate: true
   }
-);
+)
 </script>
 
 <template>
@@ -58,7 +58,7 @@ watch(
     >
       <template #logo>
         <div class="logo-content">
-          <img class="logo-img" src="/src/assets/images/logo.png" />
+          <img class="logo-img" src="/src/assets/images/logo.png">
           <span v-if="sidebar.open" class="logo-title">LOGO</span>
         </div>
       </template>

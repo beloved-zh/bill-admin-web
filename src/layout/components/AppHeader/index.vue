@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import NavBar from "./components/NavBar/index.vue";
-import TagsView from "./components/TagsView/index.vue";
+import NavBar from './components/NavBar/index.vue'
+import TagsView from './components/TagsView/index.vue'
 
 defineOptions({
-  name: "Header",
-});
+  name: 'Header'
+})
 </script>
 
 <template>
