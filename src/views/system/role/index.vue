@@ -21,7 +21,7 @@ const searchData = reactive<RoleSearch>({
   remark: ''
 })
 
-const tableHeight = useTableHeight(pageRef, dataFormRef, tableRef.value.paginationRef)
+const tableHeight = useTableHeight(pageRef, dataFormRef, paginationRef)
 
 const tableOption = reactive<TableOption>({
   columns: [
@@ -86,9 +86,6 @@ const queryCallback = (pageInfo?: PageInfo) => {
 
 onMounted(() => {
   queryCallback()
-  paginationRef.value = tableRef.value.paginationRef
-  console.log(toRefs(tableRef.value))
-  console.log(tableRef.value.paginationRef)
 })
 </script>
 
@@ -108,8 +105,15 @@ onMounted(() => {
       :max-height="tableHeight"
       :columns="tableOption.columns"
       :data="tableOption.data"
-      :pagination="tableOption.pagination"
-      @page-change="queryCallback"
+    />
+    <t-pagination
+      ref="paginationRef"
+      v-model="tableOption.pagination.current"
+      v-model:pageSize="tableOption.pagination.pageSize"
+      style="margin-top: 16px"
+      :total="tableOption.pagination.total"
+      show-jumper
+      @change="queryCallback"
     />
   </div>
 </template>

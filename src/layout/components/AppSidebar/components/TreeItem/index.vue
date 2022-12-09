@@ -5,15 +5,15 @@ import { isExternalLink, resolvePath } from '@/utils/index'
 import type { MenuTree } from '@/api/auth/types'
 import useStore from '@/store/index'
 
+defineOptions({
+  name: 'TreeItem'
+})
+
 defineProps<{
   menu: MenuTree
   path: string
   open: boolean
 }>()
-
-defineOptions({
-  name: 'TreeItem'
-})
 
 const router = useRouter()
 

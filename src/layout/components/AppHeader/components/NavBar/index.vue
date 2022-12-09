@@ -2,7 +2,6 @@
 import { useRoute } from 'vue-router'
 import { useDark, useFullscreen, useToggle } from '@vueuse/core'
 import type { Breadcrumb } from '@/router/types'
-
 import useStore from '@/store/index'
 
 defineOptions({

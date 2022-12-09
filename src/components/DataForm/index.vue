@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import type { Form, GutterObject, TdFormProps } from 'tdesign-vue-next'
 
-const props = withDefaults(defineProps<DataFormProps>(), { rowGutter: () => [16, 16] })
-
-const emit = defineEmits<{
-  (e: 'queryCallback'): void
-}>()
-
 defineOptions({ name: 'DataForm' })
 
 interface DataFormProps extends TdFormProps {
   rowGutter?: number | GutterObject | Array<GutterObject | number>
 }
+
+const props = withDefaults(defineProps<DataFormProps>(), { rowGutter: () => [16, 16] })
+
+const emit = defineEmits<{
+  (e: 'queryCallback'): void
+}>()
 
 const formRef = ref<InstanceType<typeof Form>>()
 const showPanel = ref<boolean>(false)
@@ -97,7 +97,7 @@ defineExpose({ formRef })
 </template>
 
 <style scoped lang="less">
-.data-form {
+  .data-form {
     display: flex;
     flex-direction: column;
     row-gap: v-bind(formRowGap);

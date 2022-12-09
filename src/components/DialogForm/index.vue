@@ -1,26 +1,6 @@
 <script setup lang="ts">
 import type { Dialog, Form, FormRule } from 'tdesign-vue-next'
 
-const props = withDefaults(defineProps<Props>(), {
-  width: '60vw',
-  height: '50vh',
-  cancelBtn: '取消',
-  confirmBtn: '确认',
-  closeOnEscKeydown: true,
-  closeOnOverlayClick: true,
-  layout: 'vertical',
-  labelWidth: '100px',
-  labelAlign: 'right',
-  scrollToFirstError: 'smooth',
-  resetType: 'initial'
-})
-
-const emit = defineEmits<{
-  (e: 'update:show', val: boolean): void
-  (e: 'close'): void
-  (e: 'submit'): void
-}>()
-
 defineOptions({
   name: 'DialogForm'
 })
@@ -42,6 +22,26 @@ interface Props {
   scrollToFirstError?: 'smooth' | 'auto' // 表单校验不通过时，是否自动滚动到第一个校验不通过的字段：平滑滚动、瞬间直达
   resetType?: 'empty' | 'initial' // 表单重置方式
 }
+
+const props = withDefaults(defineProps<Props>(), {
+  width: '60vw',
+  height: '50vh',
+  cancelBtn: '取消',
+  confirmBtn: '确认',
+  closeOnEscKeydown: true,
+  closeOnOverlayClick: true,
+  layout: 'vertical',
+  labelWidth: '100px',
+  labelAlign: 'right',
+  scrollToFirstError: 'smooth',
+  resetType: 'initial'
+})
+
+const emit = defineEmits<{
+  (e: 'update:show', val: boolean): void
+  (e: 'close'): void
+  (e: 'submit'): void
+}>()
 
 const dialogRef = ref<InstanceType<typeof Dialog>>()
 const formRef = ref<InstanceType<typeof Form>>()

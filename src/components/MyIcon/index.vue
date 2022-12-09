@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { Icon } from 'tdesign-icons-vue-next'
 
-withDefaults(defineProps<Props>(), {
-  url: '//at.alicdn.com/t/c/font_3505787_3hmy0ej2at.js'
-})
-
 defineOptions({
   name: 'MyIcon'
 })
@@ -12,6 +8,10 @@ defineOptions({
 interface Props {
   url?: string
 }
+
+withDefaults(defineProps<Props>(), {
+  url: '//at.alicdn.com/t/c/font_3505787_3hmy0ej2at.js'
+})
 
 const attrs = useAttrs()
 </script>

@@ -30,6 +30,9 @@ module.exports = {
     'vue/component-name-in-template-casing': ['error', 'kebab-case', {
       registeredComponentsOnly: true,
       ignores: []
+    }],
+    'vue/define-macros-order': ['off', {
+      order: ['defineProps', 'defineEmits']
     }]
   }
 }

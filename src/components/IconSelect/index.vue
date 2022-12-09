@@ -4,15 +4,6 @@ import { useResizeObserver } from '@vueuse/core'
 import type { IconFont } from '@/api/common/types'
 import { getIconFontJson } from '@/api/common'
 
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
-  placeholder: '点击选择图标',
-  popupMaxHeight: '200px',
-  iconSize: 'large'
-})
-
-const emit = defineEmits(['update:modelValue'])
-
 defineOptions({
   name: 'IconSelect'
 })
@@ -23,6 +14,15 @@ interface Props {
   popupMaxHeight?: string
   iconSize?: string
 }
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: '',
+  placeholder: '点击选择图标',
+  popupMaxHeight: '200px',
+  iconSize: 'large'
+})
+
+const emit = defineEmits(['update:modelValue'])
 
 const popupWidth = ref(0)
 const selectRef = ref<InstanceType<typeof Select>>()

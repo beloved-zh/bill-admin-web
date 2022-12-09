@@ -5,10 +5,10 @@ import { ref } from 'vue'
 import { useResizeObserver } from '@vueuse/core'
 
 const useTableHeight = (pageRef: Ref<HTMLElement | undefined>, dataFormRef: Ref<InstanceType<typeof DataForm>>, paginationRef: Ref<InstanceType<typeof Pagination>> | undefined = undefined): Ref<number> => {
+  const tableHeight = ref<number>(0)
   const pageHeight = ref<number>(0)
   const dataFormHeight = ref<number>(0)
   const paginationHeight = ref<number>(0)
-  const tableHeight = ref<number>(0)
 
   useResizeObserver(pageRef, entries => {
     const entry = entries[0]
@@ -29,7 +29,8 @@ const useTableHeight = (pageRef: Ref<HTMLElement | undefined>, dataFormRef: Ref<
   })
 
   watch([pageHeight, dataFormHeight, paginationHeight], () => {
-    tableHeight.value = pageHeight.value - dataFormHeight.value - paginationHeight.value
+    tableHeight.value = pageHeight.value - dataFormHeight.value - paginationHeight.value - 16
+    console.log(pageHeight.value, dataFormHeight.value, tableHeight.value, paginationHeight.value)
   })
 
   return tableHeight
