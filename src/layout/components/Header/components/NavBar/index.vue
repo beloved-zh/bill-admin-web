@@ -1,10 +1,44 @@
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+import { useDark, useFullscreen, useToggle } from '@vueuse/core'
+import type { Breadcrumb } from '@/router/types'
+
+import useStore from '@/store/index'
+
+defineOptions({
+  name: 'NavBar'
+})
+
+const route = useRoute()
+
+const isDark = useDark()
+
+const toggleDark = () => {
+  useToggle(isDark)
+}
+
+const { isFullscreen, toggle } = useFullscreen()
+
+const { useApp, useUser } = useStore()
+
+const toggleSidebar = () => {
+  useApp.toggleSidebar()
+}
+
+const sidebar = computed(() => useApp.sidebar)
+
+const breadcrumbs = computed<Breadcrumb[]>(() => route.meta.breadcrumbs as Breadcrumb[])
+</script>
+
 <template>
   <div class="navbar">
     <div class="left-content">
       <my-icon class="cursor-pointer item" :name="sidebar.open ? 'icon-shrink' : 'icon-unfold'" size="large" @click="toggleSidebar" />
       <t-breadcrumb>
-        <template v-for="item in breadcrumbs">
-          <t-breadcrumb-item :disabled="true"> {{ item.title }} </t-breadcrumb-item>
+        <template v-for="item in breadcrumbs" :key="item.path">
+          <t-breadcrumb-item :disabled="true">
+            {{ item.title }}
+          </t-breadcrumb-item>
         </template>
       </t-breadcrumb>
     </div>
@@ -16,49 +50,17 @@
       <template v-if="useUser.userInfo.avatar">
         <t-avatar class="item cursor-pointer" size="medium" :image="useUser.userInfo.avatar" />
       </template>
-      <template  v-else>
-        <t-avatar class="item cursor-pointer" size="medium" >{{ useUser.userInfo.userName }}</t-avatar>
+      <template v-else>
+        <t-avatar class="item cursor-pointer" size="medium">
+          {{ useUser.userInfo.userName }}
+        </t-avatar>
       </template>
     </div>
   </div>
-
 </template>
 
-<script setup lang="ts">
-  import type { Breadcrumb } from '@router/types'
-  import { useRoute } from 'vue-router'
-  import { useDark, useToggle , useFullscreen } from '@vueuse/core'
-  import useStore from '@store/index'
-
-
-  defineOptions({
-    name: 'NavBar'
-  })
-
-  const route = useRoute()
-
-  const isDark = useDark()
-
-  const toggleDark = () => {
-    useToggle(isDark)
-  }
-
-  const { isFullscreen, toggle } = useFullscreen()
-
-  const { useApp, useUser } = useStore()
-
-  const toggleSidebar = () => {
-    useApp.toggleSidebar()
-  }
-  
-  const sidebar = computed(() => useApp.sidebar)
-
-  const breadcrumbs = computed<Breadcrumb[]>(() => route.meta.breadcrumbs as Breadcrumb[])
-</script>
-
 <style scoped lang="less">
-
-  .navbar {
+.navbar {
     height: @nav-bar-height;
     display: flex;
     justify-content: space-between;

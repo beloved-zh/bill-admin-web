@@ -1,123 +1,118 @@
-<template>
-  <data-form ref="searchFormRef"
-             :model="searchData" :inline="true"
-             @queryCallback="query" >
-    <el-form-item label="角色名称" prop="roleName">
-      <el-input
-          v-model="searchData.roleName"
-          placeholder="请输入角色名称"
-          @keyup.enter.native="query()" />
-    </el-form-item>
-    <el-form-item label="状态" prop="state">
-      <select-dict-data
-          type="state"
-          v-model="searchData.state"
-          placeholder="请选择状态"
-          clearable />
-    </el-form-item>
-    <el-form-item label="备注" prop="remark">
-      <el-input
-          v-model="searchData.remark"
-          placeholder="请输入备注信息"
-          @keyup.enter.native="query()" />
-    </el-form-item>
-    <template #operate>
-      <el-button class="form-btn">添加</el-button>
-    </template>
-  </data-form>
-
-  <el-table
-      :data="tableData"
-      style="margin: 20px 0"
-  >
-    <el-table-column prop="roleName" label="角色名称" :show-overflow-tooltip="true" />
-    <el-table-column prop="roleSort" label="显示顺序" align="center" />
-    <el-table-column prop="state" label="状态" align="center" />
-    <el-table-column prop="remark" label="备注" align="center" :show-overflow-tooltip="true" />
-    <el-table-column prop="createTime" label="创建时间" align="center" width="160" sortable />
-    <el-table-column label="操作" fixed="right" align="center" width="150">
-      <template #default="{ row }">
-        <el-link type="primary">编辑</el-link>
-        <el-popconfirm
-            title="确定要删除该数据吗?"
-            cancel-button-text="取消"
-            confirm-button-text="确认"
-        >
-          <template #reference>
-            <el-link type="primary">删除</el-link>
-          </template>
-        </el-popconfirm>
-        <el-link type="primary">更多</el-link>
-      </template>
-    </el-table-column>
-  </el-table>
-
-  <el-pagination
-      v-if="totalCount > 0"
-      background
-      layout="->, total, sizes, prev, pager, next, jumper"
-      v-model:current-page="searchData.pageNum"
-      v-model:page-size="searchData.pageSize"
-      :total="totalCount" />
-
-</template>
-
 <script setup lang="ts">
-  import type { RoleSearch, RoleData } from '@api/system/role/types'
-  import type { FormRules } from 'element-plus'
-  import type { Option } from '@api/common/types'
-  import type { FormInstance } from 'element-plus'
-  import { StateEnum } from '@enums/systemEnums'
-  import { getList } from '@api/system/role'
-  import DataForm from '@components/DataForm/index.vue'
-  import PageInfo from '@components/PageList/index.vue'
+import type { PageInfo, Pagination, Table } from 'tdesign-vue-next'
+import type { RoleSearch } from '@/api/system/role/types'
+import { getList } from '@/api/system/role'
+import DataForm from '@/components/DataForm/index.vue'
+import type { TableOption } from '@/views/system/role/types'
+import { useTableHeight } from '@/hooks/pageList'
 
-  defineOptions({
-    name: 'ROLE'
-  })
+defineOptions({
+  name: 'ROLE'
+})
 
-  const dataFormRef = ref<InstanceType<typeof DataForm> | null>(null)
+const pageRef = ref<HTMLDivElement>()
+const dataFormRef = ref<InstanceType<typeof DataForm>>()
+const tableRef = ref<InstanceType<typeof Table>>()
+const paginationRef = ref<InstanceType<typeof Pagination>>()
 
-  let searchData = reactive<RoleSearch>({
-    roleName: '',
-    state: '',
-    remark: '',
-    pageNum: 0,
-    pageSize: 10
-  })
+const searchData = reactive<RoleSearch>({
+  roleName: '',
+  state: '',
+  remark: ''
+})
 
-  let totalCount = ref(0)
+const tableHeight = useTableHeight(pageRef, dataFormRef, tableRef.value.paginationRef)
 
-  let tableData = reactive<RoleData[]>([])
+const tableOption = reactive<TableOption>({
+  columns: [
+    {
+      title: '角色名称',
+      colKey: 'roleName'
+    },
+    {
+      title: '显示顺序',
+      align: 'center',
+      colKey: 'roleSort'
+    },
+    {
+      title: '状态',
+      align: 'center',
+      colKey: 'state'
+    },
+    {
+      title: '备注',
+      colKey: 'remark'
+    },
+    {
+      title: '创建时间',
+      colKey: 'createTime',
+      align: 'center',
+      ellipsis: true
+    },
+    {
+      title: '操作',
+      align: 'center',
+      width: 150,
+      cell: 'operation'
+    }
+  ],
+  data: [],
+  pagination: {
+    current: 0,
+    pageSize: 20,
+    total: 0,
+    showJumper: true
+  }
+})
 
-  watch(() => {
-    return [searchData.pageNum, searchData.pageSize]
-  }, () => {
-    query()
-  },{
-    deep: true
-  })
-
-  const query = () => {
-    tableData.length = 0
-    getList(searchData).then(data => {
-      const { pageNum, pageSize, total, list } = data
-      searchData.pageNum = pageNum
-      searchData.pageSize = pageSize
-      totalCount.value = total
-      tableData.push(...list)
-    })
+const queryCallback = (pageInfo?: PageInfo) => {
+  if (pageInfo) {
+    searchData.pageNum = pageInfo.current
+    searchData.pageSize = pageInfo.pageSize
+  } else {
+    searchData.pageNum = tableOption.pagination.current
+    searchData.pageSize = tableOption.pagination.pageSize
   }
 
-  onMounted(() => {
-    query()
+  tableOption.data.length = 0
+  getList(searchData).then(data => {
+    const { pageNum, pageSize, total, list } = data
+    tableOption.pagination.current = pageNum
+    tableOption.pagination.pageSize = pageSize
+    tableOption.pagination.total = total
+    tableOption.data.push(...list)
   })
+}
+
+onMounted(() => {
+  queryCallback()
+  paginationRef.value = tableRef.value.paginationRef
+  console.log(toRefs(tableRef.value))
+  console.log(tableRef.value.paginationRef)
+})
 </script>
 
-<style scoped lang="less">
-  @import url('@assets/styles/base.less');
+<template>
+  <div ref="pageRef" class="page-main">
+    <data-form ref="dataFormRef" :data="searchData" @query-callback="queryCallback">
+      <t-col :span="3">
+        <t-form-item label="角色名称" name="roleName">
+          <t-input v-model="searchData.roleName" placeholder="请输入角色名称" />
+        </t-form-item>
+      </t-col>
+      <template #moreOperate />
+    </data-form>
+    <t-table
+      ref="tableRef"
+      row-key="roleId"
+      :max-height="tableHeight"
+      :columns="tableOption.columns"
+      :data="tableOption.data"
+      :pagination="tableOption.pagination"
+      @page-change="queryCallback"
+    />
+  </div>
+</template>
 
-  .el-link+.el-link {
-    margin-left: 12px;
-  }
+<style scoped lang="less">
 </style>

@@ -1,9 +1,11 @@
-<template>
-  <h1>404</h1>
-</template>
 <script setup lang="ts">
 
 </script>
+
+<template>
+  <h1>404</h1>
+</template>
+
 <style lang="less" scoped>
 
 </style>

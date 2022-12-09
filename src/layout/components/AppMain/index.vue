@@ -1,5 +1,32 @@
+<script setup lang="ts">
+import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import { useFullscreen } from '@vueuse/core'
+import useStore from '@/store/index'
+
+defineOptions({
+  name: 'AppMain'
+})
+
+const { useTagsView } = useStore()
+
+const appMainRef = ref<HTMLElement>()
+
+const { toggle } = useFullscreen(appMainRef)
+
+const includeComName = computed<string[]>(() => useTagsView.cachedNames)
+
+const getRouteKey = (route: RouteLocationNormalizedLoaded) => {
+  return useTagsView.getTagViewKey(route.path)
+}
+
+// 内容全屏
+EventBus.on('FullScreenAppLayoutMain', () => {
+  toggle()
+})
+</script>
+
 <template>
-  <t-content class="app-main" ref="appMainRef">
+  <t-content ref="appMainRef" class="app-main">
     <router-view>
       <template #default="{ Component, route }">
         <keep-alive :include="includeComName">
@@ -10,41 +37,10 @@
   </t-content>
 </template>
 
-<script setup lang="ts">
-
-  import type { RouteLocationNormalizedLoaded } from 'vue-router'
-  import useStore from '@store/index'
-  import { useFullscreen } from "@vueuse/core";
-
-  defineOptions({
-    name: 'AppMain'
-  })
-
-  const { useTagsView } = useStore()
-
-  const appMainRef = ref<HTMLElement>()
-
-  const { toggle } = useFullscreen(appMainRef)
-
-  const includeComName = computed<string[]>(() => useTagsView.cachedNames)
-
-  const getRouteKey = (route: RouteLocationNormalizedLoaded) => {
-    return useTagsView.getTagViewKey(route.path)
-  }
-
-  // 内容全屏
-  EventBus.on('FullScreenAppLayoutMain', () => {
-    toggle()
-  })
-
-</script>
-
 <style scoped lang="less">
   .app-main {
-    //&:extend(.scrollbar);
     padding: 8px;
     max-height: calc(~"100vh - @{nav-bar-height} - @{tags-view-height}");
     overflow-y: auto;
   }
-
 </style>

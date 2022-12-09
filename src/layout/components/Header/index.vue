@@ -1,19 +1,18 @@
+<script setup lang="ts">
+import NavBar from './components/NavBar/index.vue'
+import TagsView from './components/TagsView/index.vue'
+
+defineOptions({
+  name: 'Header'
+})
+</script>
+
 <template>
   <t-header class="app-header">
-    <NavBar/>
-    <TagsView/>
+    <nav-bar />
+    <tags-view />
   </t-header>
 </template>
-
-<script setup lang="ts">
-  import NavBar from '@layout/components/Header/components/NavBar/index.vue'
-  import TagsView from '@layout/components/Header/components/TagsView/index.vue'
-
-  defineOptions({
-    name: 'Header'
-  })
-
-</script>
 
 <style scoped lang="less">
   .app-header {

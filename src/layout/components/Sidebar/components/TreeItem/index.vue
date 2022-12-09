@@ -1,10 +1,50 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+import { isExternalLink, resolvePath } from '@/utils/index'
+import TreeItem from '@/layout/components/Sidebar/components/TreeItem/index.vue'
+import type { MenuTree } from '@/api/auth/types'
+import useStore from '@/store/index'
+
+defineProps<{
+  menu: MenuTree
+  path: string
+  open: boolean
+}>()
+
+defineOptions({
+  name: 'TreeItem'
+})
+
+const router = useRouter()
+
+const { useApp } = useStore()
+
+const handleMenuItemClick = (path: string) => {
+  if (isExternalLink(path)) {
+    if (useApp.confirmLeave) {
+      const routeData = router.resolve({
+        path: '/confirm-leave',
+        query: {
+          target: path
+        }
+      })
+      window.open(routeData.href)
+    } else {
+      window.open(path)
+    }
+  } else {
+    router.push(path)
+  }
+}
+</script>
+
 <template>
   <t-menu-item
     v-if="!menu.children || menu.children.length === 0"
     :value="path"
     @click="handleMenuItemClick(path)"
   >
-    <template #icon >
+    <template #icon>
       <my-icon v-if="menu.meta.icon" :name="menu.meta.icon" />
     </template>
     {{ menu.meta.title }}
@@ -24,47 +64,6 @@
     </template>
   </t-submenu>
 </template>
-
-<script setup lang="ts">
-  defineOptions({
-    name: 'TreeItem'
-  })
-
-  import { isExternalLink, resolvePath } from '@utils/index'
-  import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
-  import { MenuTree } from '@api/auth/types'
-  import { useRouter } from 'vue-router'
-  import useStore from '@store/index'
-
-  const props = defineProps<{
-    menu: MenuTree,
-    path: string,
-    open: boolean
-  }>()
-
-  const router = useRouter()
-
-  const { useApp } = useStore()
-
-  const handleMenuItemClick = (path: string) => {
-    if (isExternalLink(path)) {
-      if (useApp.confirmLeave) {
-        const routeData = router.resolve({
-          path: "/confirm-leave",
-          query: {
-            target: path
-          }
-        })
-        window.open(routeData.href)
-      } else {
-        window.open(path)
-      }
-    } else {
-      router.push(path)
-    }
-  }
-
-</script>
 
 <style scoped lang="less">
 .icon {

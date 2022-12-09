@@ -1,9 +1,55 @@
+<script setup lang="ts">
+import type { Form, GutterObject, TdFormProps } from 'tdesign-vue-next'
+
+const props = withDefaults(defineProps<DataFormProps>(), { rowGutter: () => [16, 16] })
+
+const emit = defineEmits<{
+  (e: 'queryCallback'): void
+}>()
+
+defineOptions({ name: 'DataForm' })
+
+interface DataFormProps extends TdFormProps {
+  rowGutter?: number | GutterObject | Array<GutterObject | number>
+}
+
+const formRef = ref<InstanceType<typeof Form>>()
+const showPanel = ref<boolean>(false)
+
+const gutter = computed<Array<GutterObject | number>>(() => {
+  if (props.rowGutter instanceof Array<GutterObject | number>) {
+    if (props.rowGutter.length === 0) {
+      return [16, 16]
+    } else if (props.rowGutter.length === 1) {
+      return [...props.rowGutter, 16]
+    }
+    return props.rowGutter
+  }
+  return [props.rowGutter, 16]
+})
+
+const formRowGap = computed(() => `${gutter.value[1]}px`)
+
+const handleMore = () => {
+  showPanel.value = !showPanel.value
+}
+
+const handleQuery = ({ validateResult }) => {
+  if (validateResult !== true) {
+    return
+  }
+  emit('queryCallback')
+}
+
+defineExpose({ formRef })
+</script>
+
 <template>
   <t-form
-      ref="formRef"
-      class="data-form"
-      v-bind="attrs"
-      @submit="handleQuery"
+    ref="formRef"
+    class="data-form"
+    v-bind="props"
+    @submit="handleQuery"
   >
     <t-row :gutter="gutter">
       <slot />
@@ -20,19 +66,29 @@
       <t-col :span="6" class="default-operate">
         <t-space>
           <t-button theme="primary" type="submit">
-            <template #icon><my-icon name="icon-search" /></template>搜索
+            <template #icon>
+              <my-icon name="icon-search" />
+            </template>搜索
           </t-button>
           <t-button theme="default" variant="outline" type="reset">
-            <template #icon><my-icon name="icon-reset" /></template>重置
+            <template #icon>
+              <my-icon name="icon-reset" />
+            </template>重置
           </t-button>
           <t-button theme="default" variant="outline">
-            <template #icon><my-icon name="icon-import" /></template>导入
+            <template #icon>
+              <my-icon name="icon-import" />
+            </template>导入
           </t-button>
           <t-button theme="default" variant="outline">
-            <template #icon><my-icon name="icon-export" /></template>导出
+            <template #icon>
+              <my-icon name="icon-export" />
+            </template>导出
           </t-button>
           <t-button theme="default" variant="outline" @click="handleMore">
-            <template #icon><my-icon :name="showPanel ? 'icon-up' : 'icon-down'" /></template>
+            <template #icon>
+              <my-icon :name="showPanel ? 'icon-up' : 'icon-down'" />
+            </template>
           </t-button>
         </t-space>
       </t-col>
@@ -40,67 +96,8 @@
   </t-form>
 </template>
 
-<script setup lang="ts">
-  import type { Form, GutterObject } from 'tdesign-vue-next'
-
-  defineOptions({
-    name: 'DataForm',
-    inheritAttrs: false
-  })
-
-  type Props = {
-    rowGutter?: number | GutterObject | Array<GutterObject | number>
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    rowGutter: () => [16, 16]
-  })
-
-  const attrs = useAttrs()
-
-  const emit = defineEmits<{
-    (e: 'queryCallback'): void
-  }>()
-
-  const formRef = ref<InstanceType<typeof Form>>()
-  let showPanel = ref<boolean>(false)
-
-  const gutter = computed<Array<GutterObject | number>>(() => {
-    if (props.rowGutter instanceof Array<GutterObject | number>) {
-      if (props.rowGutter.length === 0) {
-        return [16, 16]
-      } else if (props.rowGutter.length === 1) {
-        return [...props.rowGutter, 16]
-      } else {
-        return props.rowGutter
-      }
-    } else {
-      return [props.rowGutter, 16]
-    }
-  })
-
-  const formRowGap = computed(() => `${gutter.value[1]}px`)
-
-  const handleMore = () => {
-    showPanel.value = !showPanel.value
-  }
-
-  const handleQuery = ({ validateResult }) => {
-    if (validateResult !== true) {
-      return
-    }
-    emit('queryCallback')
-  }
-
-  defineExpose({
-    formRef
-  })
-
-</script>
-
 <style scoped lang="less">
-
-  .data-form {
+.data-form {
     display: flex;
     flex-direction: column;
     row-gap: v-bind(formRowGap);
@@ -117,5 +114,4 @@
       text-align: right;
     }
   }
-
 </style>

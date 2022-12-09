@@ -1,56 +1,55 @@
+<script setup lang="ts">
+const props = defineProps({
+  prefix: {
+    type: String,
+    default: 'icon'
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  color: {
+    type: String,
+    default: ''
+  },
+  size: {
+    type: String,
+    default: 'default'
+  }
+})
+
+defineOptions({
+  name: 'SvgIcon'
+})
+
+const symbolId = computed(() => `#${props.prefix}-${props.name}`)
+
+const fontSize = computed(() => {
+  let size = '20px'
+
+  switch (props.size) {
+    case 'small':
+      size = '20px'
+      break
+    case 'default':
+      size = '32px'
+      break
+    case 'large':
+      size = '48px'
+      break
+    default:
+      size = props.size
+  }
+
+  return size
+})
+</script>
+
 <template>
   <svg aria-hidden="true" class="svg-icon">
     <use :xlink:href="symbolId" :fill="color" />
   </svg>
 </template>
-
-<script setup lang="ts">
-
-  defineOptions({
-    name: 'SvgIcon'
-  })
-
-  const props = defineProps({
-    prefix: {
-      type: String,
-      default: 'icon',
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    color: {
-      type: String,
-      default: '',
-    },
-    size: {
-      type: String,
-      default: 'default',
-    }
-  })
-
-  const symbolId = computed(() => `#${props.prefix}-${props.name}`)
-
-  const fontSize = computed(() => {
-    let size = '20px'
-
-    switch(props.size){
-      case 'small':
-        size = '20px'
-        break;
-      case 'default':
-        size = '32px'
-        break;
-      case 'large':
-        size = '48px'
-        break;
-      default:
-        size = props.size
-    }
-
-    return size
-  })
-</script>
 
 <style scoped lang="less">
 .svg-icon {

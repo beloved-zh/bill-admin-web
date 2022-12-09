@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const contentRef = ref<HTMLDivElement>()
+const targetRef = ref<HTMLDivElement>()
+
+const target = computed<string>(() => route.query.target as string)
+
+const showOpen = computed<boolean>(() => {
+  if (!targetRef.value) {
+    return false
+  }
+  if (!contentRef.value) {
+    return false
+  }
+  return targetRef.value.scrollWidth > contentRef.value.scrollWidth
+})
+
+const open = ref(false)
+
+const accessTarget = () => {
+  window.open(target.value, '_self')
+}
+</script>
+
 <template>
   <div class="page-content">
     <el-card class="box-card">
@@ -8,45 +34,27 @@
         </div>
       </template>
       <div class="card-content">
-        <div class="title">即将跳转到外部网站，安全性未知，是否继续</div>
-        <div class="content" ref="contentRef">
-          <div class="target" ref="targetRef" :class="open ? 'newline': 'beyond—hiding'">{{target}}</div>
-          <el-link type="primary" class="link" v-if="showOpen" @click="open = !open">{{ open ? '收起' : '展开'}}</el-link>
+        <div class="title">
+          即将跳转到外部网站，安全性未知，是否继续
+        </div>
+        <div ref="contentRef" class="content">
+          <div ref="targetRef" class="target" :class="open ? 'newline' : 'beyond—hiding'">
+            {{ target }}
+          </div>
+          <el-link v-if="showOpen" type="primary" class="link" @click="open = !open">
+            {{ open ? '收起' : '展开' }}
+          </el-link>
         </div>
         <div class="bottom">
-          <el-button type="primary" @click="accessTarget">继续访问</el-button>
+          <el-button type="primary" @click="accessTarget">
+            继续访问
+          </el-button>
         </div>
       </div>
     </el-card>
   </div>
-
 </template>
-<script setup lang="ts">
-  import { useRoute } from 'vue-router'
-  const route = useRoute()
 
-  let contentRef = ref<HTMLDivElement>()
-  let targetRef = ref<HTMLDivElement>()
-
-
-  const target = computed<string>(() => route.query.target as string)
-
-  const showOpen = computed<boolean>(() => {
-    if (!targetRef.value) {
-      return false
-    }
-    if (!contentRef.value) {
-      return false
-    }
-    return targetRef.value.scrollWidth > contentRef.value.scrollWidth
-  })
-
-  let open = ref(false)
-
-  const accessTarget = () => {
-    window.open(target.value, '_self')
-  }
-</script>
 <style lang="less" scoped>
   @import url('@assets/styles/base.less');
   .page-content {
@@ -101,7 +109,6 @@
           float: right;
         }
       }
-
 
       .bottom {
         text-align: right;

@@ -1,4 +1,4 @@
-import type { MenuTree, MenuForm } from '@api/system/menu/types'
+import type { MenuTree, MenuForm } from '@/api/system/menu/types'
 import {FormRule} from "tdesign-vue-next";
 
 /**

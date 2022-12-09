@@ -1,17 +1,12 @@
-<template>
-  <page-list />
-
-</template>
-
 <script setup lang="ts">
-  import PageList from '@components/PageList/index.vue'
-
-  defineOptions({
-    name: 'USER'
-  })
-
-
+defineOptions({
+  name: 'USER'
+})
 </script>
+
+<template>
+  <div>用户管理</div>
+</template>
 
 <style scoped lang="less">
 

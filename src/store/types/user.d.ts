@@ -1,4 +1,4 @@
-import {UserInfo} from "@api/auth/types"
+import {UserInfo} from "@/api/auth/types"
 
 export interface UserState {
     token: string;

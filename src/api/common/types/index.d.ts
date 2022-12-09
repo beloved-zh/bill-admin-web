@@ -1,5 +1,3 @@
-import {getIconFontJson} from "@api/common";
-
 /**
  * 字典选项
  */

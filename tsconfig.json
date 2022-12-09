@@ -10,6 +10,7 @@
     "strictFunctionTypes": false,
     "jsx": "preserve",
     "baseUrl": "./",
+    "outDir": "/",
     "allowJs": true,
     "sourceMap": true,
     "esModuleInterop": true,
@@ -22,23 +23,12 @@
     "skipLibCheck": false,
     "types": [
       "vite/client",
-      "element-plus/global",
       "vite-plugin-svg-icons/client",
       "unplugin-vue-define-options/macros-global"
     ],
     "removeComments": true,
     "paths": {
-      "@/*": ["src/*"],
-      "@api/*": ["src/api/*"],
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@enums/*": ["src/enums/*"],
-      "@layout/*": ["src/layout/*"],
-      "@pinia/*": ["src/pinia/*"],
-      "@router/*": ["src/router/*"],
-      "@store/*": ["src/store/*"],
-      "@utils/*": ["src/utils/*"],
-      "@views/*": ["src/views/*"]
+      "@/*": ["src/*"]
     }
   },
   "include": [

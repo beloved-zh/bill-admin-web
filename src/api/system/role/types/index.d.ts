@@ -1,5 +1,5 @@
-import { MenuTypeEnum, BooleanEnum, StateEnum } from '@enums/systemEnums'
-import type { PageParams } from '@api/common/types'
+import { MenuTypeEnum, BooleanEnum, StateEnum } from '@/enums/systemEnums'
+import type { PageParams } from '@/api/common/types'
 
 export interface RoleSearch extends PageParams {
     roleName: string;

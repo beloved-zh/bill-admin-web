@@ -1,28 +1,18 @@
-import { UserConfig, ConfigEnv, loadEnv } from 'vite'
 import path from 'path'
+import type { ConfigEnv, UserConfig } from 'vite'
+import { loadEnv } from 'vite'
 
 import { createVitePlugins } from './config/vite/plugins'
 import { InitProxy } from './config/vite/proxy'
 
 export default ({ mode }: ConfigEnv): UserConfig => {
-
   // 获取 .env 环境配置文件
-  const env = loadEnv(mode, process.cwd());
+  const env = loadEnv(mode, process.cwd())
 
   return {
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, 'src'),
-        '@api': path.resolve(__dirname, 'src/api'),
-        '@assets': path.resolve(__dirname, 'src/assets'),
-        '@components': path.resolve(__dirname, 'src/components'),
-        '@enums': path.resolve(__dirname, 'src/enums'),
-        '@layout': path.resolve(__dirname, 'src/layout'),
-        '@pinia': path.resolve(__dirname, 'src/pinia'),
-        '@router': path.resolve(__dirname, 'src/router'),
-        '@store': path.resolve(__dirname, 'src/store'),
-        '@utils': path.resolve(__dirname, 'src/utils'),
-        '@views': path.resolve(__dirname, 'src/views')
+        '@': path.resolve(__dirname, 'src')
       }
     },
     plugins: createVitePlugins(),
@@ -31,7 +21,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       preprocessorOptions: {
         less: {
           modifyVars: {
-            hack: `true; @import (reference) "${path.resolve('src/assets/styles/variables.module.less')}";`,
+            hack: `true; @import (reference) "${path.resolve('src/assets/styles/variables.module.less')}";`
           },
           javascriptEnabled: true
         }
@@ -44,11 +34,11 @@ export default ({ mode }: ConfigEnv): UserConfig => {
           keep_infinity: true,
           drop_console: Boolean(env.VITE_DROP_CONSOLE),
           drop_debugger: Boolean(env.VITE_DROP_DEBUGGER)
-        },
+        }
       },
       rollupOptions: {
         // 确保外部化处理那些你不想打包进库的依赖
-        external: [],
+        external: []
         // https://rollupjs.org/guide/en/#big-list-of-options
       },
       watch: {

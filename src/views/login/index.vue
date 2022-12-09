@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import ValidCodeLogin from './components/ValidCodeLogin/index.vue'
+import PasswordLogin from './components/PasswordLogin/index.vue'
+
+defineOptions({
+  name: 'Login'
+})
+</script>
+
 <template>
   <div class="login-page login-bg">
     <div class="login-container">
@@ -7,10 +16,10 @@
       <div class="right-container">
         <t-tabs :default-value="1">
           <t-tab-panel :value="1" label="账号密码登录">
-            <PasswordLogin ref="passwordLogin" />
+            <password-login ref="passwordLogin" />
           </t-tab-panel>
           <t-tab-panel :value="2" label="手机验证登录">
-            <ValidCodeLogin />
+            <valid-code-login />
           </t-tab-panel>
         </t-tabs>
         <t-divider>其他方式登录</t-divider>
@@ -25,19 +34,8 @@
   </div>
 </template>
 
-<script setup lang="ts">
-
-  defineOptions({
-    name: 'Login'
-  })
-
-  import ValidCodeLogin from './components/ValidCodeLogin/index.vue'
-  import PasswordLogin from './components/PasswordLogin/index.vue'
-
-</script>
-
 <style scoped lang="less">
-  @import url('@assets/styles/index.less');
+  @import url('@/assets/styles/index.less');
   .login-page {
     width: 100vw;
     min-height: 100vh;

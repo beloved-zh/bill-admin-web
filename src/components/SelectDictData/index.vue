@@ -1,48 +1,48 @@
-<template>
-  <el-select v-bind="attrs" ref="elSelectRef" >
-    <el-option
-        v-for="item in options"
-        :key="item.value"
-        :label="item[label]"
-        :value="item[value]"
-    />
-  </el-select>
-</template>
-
 <script setup lang="ts">
-  import type { ElSelect } from 'element-plus/es'
-  import type { Option } from '@api/common/types'
-  import { getOptionData } from '@api/common'
+// import { ElSelect } from 'element-plus/es'
+import type { Option } from '@/api/common/types'
+import { getOptionData } from '@/api/common'
 
-  defineOptions({
-    name: 'SelectDictData'
-  })
+const props = withDefaults(defineProps<Props>(), {
+  label: 'label',
+  value: 'value'
+})
 
-  type Props = {
-    type: string,
-    label?: 'label' | 'value',
-    value?: 'label' | 'value'
+defineOptions({
+  name: 'SelectDictData'
+})
+
+interface Props {
+  type: string
+  label?: 'label' | 'value'
+  value?: 'label' | 'value'
+}
+
+const attrs = useAttrs()
+
+const elSelectRef = ref()
+
+const options = reactive<Option[]>([])
+
+onMounted(() => {
+  if (props.type) {
+    getOptionData(props.type).then(data => {
+      options.push(...data)
+    })
   }
-
-  const props = withDefaults(defineProps<Props>(), {
-    label: 'label',
-    value: 'value'
-  })
-
-  const attrs = useAttrs()
-
-  let elSelectRef = ref<InstanceType<typeof ElSelect>>()
-
-  let options = reactive<Option[]>([])
-
-  onMounted(() => {
-    if (props.type) {
-      getOptionData(props.type).then(data => {
-        options.push(...data)
-      })
-    }
-  })
+})
 </script>
+
+<template>
+  <ElSelect v-bind="attrs" ref="elSelectRef">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item[label]"
+      :value="item[value]"
+    />
+  </ElSelect>
+</template>
 
 <style scoped lang="less">
 

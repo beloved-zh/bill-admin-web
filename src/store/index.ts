@@ -4,10 +4,10 @@ import useMenuStore from './modules/menu'
 import useTagsViewStore from './modules/tagsView'
 
 const useStore = () => ({
-    useApp: useAppStore(),
-    useUser: useUserStore(),
-    useMenu: useMenuStore(),
-    useTagsView: useTagsViewStore(),
+  useApp: useAppStore(),
+  useUser: useUserStore(),
+  useMenu: useMenuStore(),
+  useTagsView: useTagsViewStore()
 })
 
 export default useStore

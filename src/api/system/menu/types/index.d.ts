@@ -1,4 +1,4 @@
-import { MenuTypeEnum, BooleanEnum, StateEnum } from '@enums/systemEnums'
+import { MenuTypeEnum, BooleanEnum, StateEnum } from '@/enums/systemEnums'
 
 export interface MenuRequest {
     menuName: string;

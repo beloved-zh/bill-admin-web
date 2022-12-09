@@ -1,17 +1,51 @@
+<script setup lang="ts">
+import type { TdMenuInterface } from 'tdesign-vue-next/lib/menu/const'
+import type { MenuValue } from 'tdesign-vue-next/lib/menu/type'
+import { useRoute } from 'vue-router'
+import variables from '@/assets/styles/variables.module.less'
+import TreeItem from '@/layout/components/Sidebar/components/TreeItem/index.vue'
+import useStore from '@/store/index'
+import type { MenuTree } from '@/api/auth/types'
+import { resolveBasePath } from '@/utils/index'
+
+defineOptions({
+  name: 'Sidebar'
+})
+
+const menuRef = ref<TdMenuInterface>()
+
+const expandedMenus = ref<MenuValue[]>()
+
+const route = useRoute()
+
+const { useApp, useMenu } = useStore()
+
+const menus = computed<MenuTree[]>(() => useMenu.menus)
+const sidebar = computed(() => useApp.sidebar)
+const activeMenu = computed(() => route.path)
+const menuWidth = computed(() => [variables['menu-unfold-width'], variables['menu-fold-width']])
+
+watch(route, () => {
+  expandedMenus.value = route.meta.breadcrumbs!.map(item => item.path)
+}, {
+  immediate: true
+})
+</script>
+
 <template>
   <t-aside class="app-sidebar" :width="sidebar.open ? variables['menu-unfold-width'] : variables['menu-fold-width']">
     <t-menu
-        ref="menuRef"
-        :expand-mutex="true"
-        :value="activeMenu"
-        v-model:expanded="expandedMenus"
-        :collapsed="!sidebar.open"
-        :width="menuWidth"
+      ref="menuRef"
+      v-model:expanded="expandedMenus"
+      :expand-mutex="true"
+      :value="activeMenu"
+      :collapsed="!sidebar.open"
+      :width="menuWidth"
     >
       <template #logo>
         <div class="logo-content">
-          <img class="logo-img" src="/src/assets/images/logo.png" />
-          <span class="logo-title" v-if="sidebar.open">LOGO</span>
+          <img class="logo-img" src="/src/assets/images/logo.png">
+          <span v-if="sidebar.open" class="logo-title">LOGO</span>
         </div>
       </template>
 
@@ -22,45 +56,8 @@
   </t-aside>
 </template>
 
-<script setup lang="ts">
-
-  import variables from '@/assets/styles/variables.module.less';
-  import type { TdMenuInterface } from 'tdesign-vue-next/lib/menu/const'
-  import type { MenuValue } from 'tdesign-vue-next/lib/menu/type'
-  import TreeItem from '@layout/components/Sidebar/components/TreeItem/index.vue'
-  import useStore from '@store/index'
-  import { useRoute } from 'vue-router'
-  import { MenuTree } from '@api/auth/types'
-  import { resolveBasePath } from '@utils/index'
-
-  defineOptions({
-    name: 'Sidebar'
-  })
-
-  const menuRef = ref<TdMenuInterface>()
-
-  const expandedMenus = ref<MenuValue[]>()
-
-  const route = useRoute()
-
-  const { useApp, useMenu } = useStore()
-
-  const menus = computed<MenuTree[]>(() => useMenu.menus)
-  const sidebar = computed(() => useApp.sidebar)
-  const activeMenu = computed(() => route.path)
-  const menuWidth = computed(() => [variables['menu-unfold-width'], variables['menu-fold-width']])
-
-  watch(route, () => {
-    expandedMenus.value = route.meta.breadcrumbs!.map(item => item.path)
-  }, {
-    immediate: true
-  })
-
-</script>
-
 <style scoped lang="less">
-
-  .app-sidebar {
+.app-sidebar {
 
     height: 100vh;
     overflow-y: auto;
@@ -94,9 +91,6 @@
         white-space: nowrap;
       }
     }
-
-
-
 
   }
 </style>

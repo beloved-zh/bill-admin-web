@@ -1,7 +1,10 @@
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
+import type { RouteMeta } from 'vue-router'
 
-export interface TagView extends Partial<RouteLocationNormalizedLoaded> {
-    key?: number
+export interface TagView {
+    key: number;
+    name: string;
+    path: string;
+    meta: RouteMeta
 }
 
 export interface TagsViewState {
