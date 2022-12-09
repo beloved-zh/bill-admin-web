@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { isExternalLink, resolvePath } from '@/utils/index'
-import TreeItem from '@/layout/components/Sidebar/components/TreeItem/index.vue'
-import type { MenuTree } from '@/api/auth/types'
-import useStore from '@/store/index'
+import { useRouter } from "vue-router";
+import TreeItem from "./index.vue";
+import { isExternalLink, resolvePath } from "@/utils/index";
+import type { MenuTree } from "@/api/auth/types";
+import useStore from "@/store/index";
 
 defineProps<{
-  menu: MenuTree
-  path: string
-  open: boolean
-}>()
+  menu: MenuTree;
+  path: string;
+  open: boolean;
+}>();
 
 defineOptions({
-  name: 'TreeItem'
-})
+  name: "TreeItem",
+});
 
-const router = useRouter()
+const router = useRouter();
 
-const { useApp } = useStore()
+const { useApp } = useStore();
 
 const handleMenuItemClick = (path: string) => {
   if (isExternalLink(path)) {
     if (useApp.confirmLeave) {
       const routeData = router.resolve({
-        path: '/confirm-leave',
+        path: "/confirm-leave",
         query: {
-          target: path
-        }
-      })
-      window.open(routeData.href)
+          target: path,
+        },
+      });
+      window.open(routeData.href);
     } else {
-      window.open(path)
+      window.open(path);
     }
   } else {
-    router.push(path)
+    router.push(path);
   }
-}
+};
 </script>
 
 <template>
@@ -49,10 +49,7 @@ const handleMenuItemClick = (path: string) => {
     </template>
     {{ menu.meta.title }}
   </t-menu-item>
-  <t-submenu
-    v-else
-    :value="path"
-  >
+  <t-submenu v-else :value="path">
     <template #icon>
       <my-icon v-if="menu.meta.icon" :name="menu.meta.icon" />
     </template>
@@ -60,7 +57,12 @@ const handleMenuItemClick = (path: string) => {
       {{ menu.meta.title }}
     </template>
     <template v-for="item in menu.children" :key="resolvePath(path, item.path)">
-      <tree-item v-if="!item.meta.hidden" :menu="item" :path="resolvePath(path, item.path)" :open="open" />
+      <tree-item
+        v-if="!item.meta.hidden"
+        :menu="item"
+        :path="resolvePath(path, item.path)"
+        :open="open"
+      />
     </template>
   </t-submenu>
 </template>
