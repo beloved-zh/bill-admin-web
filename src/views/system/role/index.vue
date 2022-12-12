@@ -10,7 +10,7 @@ defineOptions({
   name: 'ROLE'
 })
 
-const pageRef = ref<HTMLDivElement>()
+const pageRef = ref<HTMLDivElement | null>(null)
 const dataFormRef = ref<InstanceType<typeof DataForm>>()
 const tableRef = ref<InstanceType<typeof Table>>()
 const paginationRef = ref<InstanceType<typeof Pagination>>()
@@ -102,7 +102,7 @@ onMounted(() => {
     <t-table
       ref="tableRef"
       row-key="roleId"
-      :max-height="tableHeight"
+      :height="tableHeight"
       :columns="tableOption.columns"
       :data="tableOption.data"
     />
@@ -110,9 +110,8 @@ onMounted(() => {
       ref="paginationRef"
       v-model="tableOption.pagination.current"
       v-model:pageSize="tableOption.pagination.pageSize"
-      style="margin-top: 16px"
+      class="page-pagination"
       :total="tableOption.pagination.total"
-      show-jumper
       @change="queryCallback"
     />
   </div>

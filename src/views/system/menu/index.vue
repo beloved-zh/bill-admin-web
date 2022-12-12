@@ -15,7 +15,7 @@ defineOptions({
   name: 'MENU'
 })
 
-const pageRef = ref<HTMLDivElement>()
+const pageRef = ref<HTMLDivElement | null>(null)
 const dataFormRef = ref<InstanceType<typeof DataForm>>()
 const dialogFormRef = ref<InstanceType<typeof DialogForm>>()
 

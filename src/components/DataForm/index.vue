@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import type { Form, GutterObject, TdFormProps } from 'tdesign-vue-next'
+import type { Form, GutterObject } from 'tdesign-vue-next'
 
-defineOptions({ name: 'DataForm' })
+defineOptions({
+  name: 'DataForm',
+  inheritAttrs: false
+})
 
-interface DataFormProps extends TdFormProps {
+interface Props {
   rowGutter?: number | GutterObject | Array<GutterObject | number>
 }
 
-const props = withDefaults(defineProps<DataFormProps>(), { rowGutter: () => [16, 16] })
+const props = withDefaults(defineProps<Props>(), {
+  rowGutter: () => [16, 16]
+})
+
+const attrs = useAttrs()
+const slots = useSlots()
 
 const emit = defineEmits<{
   (e: 'queryCallback'): void
@@ -48,7 +56,7 @@ defineExpose({ formRef })
   <t-form
     ref="formRef"
     class="data-form"
-    v-bind="props"
+    v-bind="attrs"
     @submit="handleQuery"
   >
     <t-row :gutter="gutter">
@@ -85,7 +93,7 @@ defineExpose({ formRef })
               <my-icon name="icon-export" />
             </template>导出
           </t-button>
-          <t-button theme="default" variant="outline" @click="handleMore">
+          <t-button v-if="slots.hidePanel" theme="default" variant="outline" @click="handleMore">
             <template #icon>
               <my-icon :name="showPanel ? 'icon-up' : 'icon-down'" />
             </template>

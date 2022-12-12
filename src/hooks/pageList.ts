@@ -1,36 +1,22 @@
 import type { Ref } from 'vue'
 import type DataForm from '@components/DataForm/index.vue'
 import type { Pagination } from 'tdesign-vue-next'
-import { ref } from 'vue'
-import { useResizeObserver } from '@vueuse/core'
+import { useElementSize } from '@vueuse/core'
 
-const useTableHeight = (pageRef: Ref<HTMLElement | undefined>, dataFormRef: Ref<InstanceType<typeof DataForm>>, paginationRef: Ref<InstanceType<typeof Pagination>> | undefined = undefined): Ref<number> => {
-  const tableHeight = ref<number>(0)
-  const pageHeight = ref<number>(0)
-  const dataFormHeight = ref<number>(0)
-  const paginationHeight = ref<number>(0)
+const useTableHeight = (pageRef: Ref<HTMLElement | null>, dataFormRef: Ref<InstanceType<typeof DataForm>>, paginationRef: Ref<InstanceType<typeof Pagination>> | undefined = undefined): Ref<number> => {
+  // 内容高度，不带边距边框
+  const { height: pageHeight } = useElementSize(pageRef)
+  const { height: dataFormHeight } = useElementSize(dataFormRef)
+  const { height: paginationHeight } = useElementSize(paginationRef)
 
-  useResizeObserver(pageRef, entries => {
-    const entry = entries[0]
-    const { height } = entry.contentRect
-    pageHeight.value = height
+  // 监听 form、pagination 高度变化，重新获取高度（包含边距）
+  watch([dataFormHeight, paginationHeight], () => {
+    dataFormHeight.value = dataFormRef.value.$el.offsetHeight
+    paginationHeight.value = paginationRef?.value.$el.offsetHeight | 0
   })
 
-  useResizeObserver(dataFormRef, entries => {
-    const entry = entries[0]
-    const { height } = entry.contentRect
-    dataFormHeight.value = height
-  })
-
-  useResizeObserver(paginationRef, entries => {
-    const entry = entries[0]
-    const { height } = entry.contentRect
-    paginationHeight.value = height
-  })
-
-  watch([pageHeight, dataFormHeight, paginationHeight], () => {
-    tableHeight.value = pageHeight.value - dataFormHeight.value - paginationHeight.value - 16
-    console.log(pageHeight.value, dataFormHeight.value, tableHeight.value, paginationHeight.value)
+  const tableHeight = computed(() => {
+    return pageHeight.value - dataFormHeight.value - paginationHeight.value
   })
 
   return tableHeight
