@@ -1,8 +1,8 @@
 import { MenuTypeEnum, BooleanEnum, StateEnum } from '@/enums/systemEnums'
 
 export interface MenuRequest {
-    menuName: string;
-    state: string;
+    menuName?: string;
+    state?: StateEnum | null;
 }
 
 export interface MenuForm {

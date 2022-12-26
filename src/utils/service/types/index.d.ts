@@ -1,8 +1,15 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
+// 扩展 AxiosRequestConfig 类型
+declare module 'axios' {
+    interface AxiosRequestConfig {
+        showSuccessMessage?: boolean
+        showLoading?: boolean
+    }
+}
+
 // 自定义传入的参数
 export interface RequestConfig<T = any> extends AxiosRequestConfig {
-    showLoading?: boolean
     interceptors?: RequestInterceptors<T>
 }
 

@@ -3,7 +3,7 @@ import Request from './request'
 import type { RequestConfig } from './types'
 import { ContentTypeEnum, MethodEnum } from '@/enums/httpEnums'
 import useStore from '@/store'
-import { errorMessage } from '@/hooks/useMessage'
+import { errorMessage, successMessage } from '@/hooks/useMessage'
 
 interface MyResponse<T = any> {
   code: number
@@ -31,8 +31,12 @@ const defaultRequest = new Request({
     },
     // 响应拦截器
     responseInterceptors: (result: AxiosResponse<MyResponse>) => {
+      const { showSuccessMessage } = result.config
       const { code, message, data } = result.data
       if (code === 2000) {
+        if (showSuccessMessage) {
+          successMessage(message || '操作成功')
+        }
         return data
       } else {
         errorMessage(message || '系统内部错误')
@@ -48,8 +52,10 @@ const defaultRequest = new Request({
 })
 
 const request = <T>(config: RequestConfig): Promise<T> => {
-  const { method = MethodEnum.POST } = config
+  const { method = MethodEnum.POST, showLoading = false, showSuccessMessage = false } = config
   config.method = method
+  config.showLoading = showLoading
+  config.showSuccessMessage = showSuccessMessage
   return defaultRequest.instance.request(config)
 }
 

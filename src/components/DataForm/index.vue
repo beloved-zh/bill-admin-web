@@ -63,12 +63,12 @@ defineExpose({ formRef })
       <slot />
     </t-row>
     <t-row v-show="showPanel" :gutter="gutter">
-      <slot name="hidePanel" />
+      <slot name="hide-panel" />
     </t-row>
     <t-row :gutter="gutter" class="operate">
       <t-col :span="6" class="more-operate">
         <t-space>
-          <slot name="moreOperate" />
+          <slot name="more-operate" />
         </t-space>
       </t-col>
       <t-col :span="6" class="default-operate">
@@ -93,7 +93,7 @@ defineExpose({ formRef })
               <my-icon name="icon-export" />
             </template>导出
           </t-button>
-          <t-button v-if="slots.hidePanel" theme="default" variant="outline" @click="handleMore">
+          <t-button v-if="slots['hide-panel']" theme="default" variant="outline" @click="handleMore">
             <template #icon>
               <my-icon :name="showPanel ? 'icon-up' : 'icon-down'" />
             </template>

@@ -7,7 +7,7 @@ import type { PanlForm } from '@/views/system/menu/types'
 import type { Option } from '@/api/common/types'
 import MyIcon from '@/components/MyIcon/index.vue'
 import { addMenu, editMenu, getMenuTree, removeMenu } from '@/api/system/menu'
-import { useTableHeight } from '@/hooks/pageList'
+import { useTableHeightPagination } from '@/hooks/pageList'
 import { BooleanEnum, MenuTypeEnum, StateEnum } from '@/enums/systemEnums'
 import { isExternalLink } from '@/utils'
 
@@ -19,11 +19,11 @@ const pageRef = ref<HTMLDivElement | null>(null)
 const dataFormRef = ref<InstanceType<typeof DataForm>>()
 const dialogFormRef = ref<InstanceType<typeof DialogForm>>()
 
-const tableHeight = useTableHeight(pageRef, dataFormRef)
+const tableHeight = useTableHeightPagination(pageRef, dataFormRef)
 
 const formData = reactive<MenuRequest>({
   menuName: '',
-  state: ''
+  state: null
 })
 
 const tableColumns = reactive<PrimaryTableCol<MenuTree>[]>([
@@ -168,23 +168,23 @@ const handleEdit = (parentMenu: MenuTree) => {
 
 const submitForm = async () => {
   if (panlForm.form.menuId) {
-    editMenu(panlForm.form).then(() => {
-      dialogFormRef.value!.closeDialog()
-      queryCallback()
-    })
+    await editMenu(panlForm.form)
   } else {
-    addMenu(panlForm.form).then(() => {
-      dialogFormRef.value!.closeDialog()
-      queryCallback()
-    })
+    await addMenu(panlForm.form)
   }
+  panlForm.open = false
+  queryCallback()
 }
 
-const handleRemove = (menu: MenuTree) => {
-  removeMenu(menu.menuId).then(() => {
-    successMessage('删除成功')
-    queryCallback()
-  })
+const closeForm = () => {
+  delete panlForm.form.menuId
+  panlForm.parentMenu = null
+  panlForm.title = ''
+}
+
+const handleRemove = async (menu: MenuTree) => {
+  await removeMenu(menu.menuId)
+  queryCallback()
 }
 
 const viewsList = reactive<Option[]>([])
@@ -220,14 +220,14 @@ onMounted(() => {
           <t-input v-model="formData.menuName" />
         </t-form-item>
       </t-col>
-      <template #hidePanel>
+      <template #hide-panel>
         <t-col :span="3">
           <t-form-item label="状态" name="state">
             <t-input v-model="formData.state" />
           </t-form-item>
         </t-col>
       </template>
-      <template #moreOperate>
+      <template #more-operate>
         <t-button theme="primary" @click="handleAdd()">
           添加
         </t-button>
@@ -264,10 +264,11 @@ onMounted(() => {
       :data="panlForm.form"
       :rules="panlForm.rules"
       @submit="submitForm"
+      @close="closeForm"
     >
       <t-row :gutter="[16, 24]" class="w-10">
         <t-col :span="12">
-          <t-form-item label="父菜单" name="parentMenu">
+          <t-form-item label="父菜单">
             <t-input :value="panlForm.parentMenu?.menuTitle || '主菜单'" :disabled="true" />
           </t-form-item>
         </t-col>

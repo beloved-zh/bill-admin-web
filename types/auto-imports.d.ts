@@ -84,6 +84,7 @@ declare global {
   const useRouter: typeof import('vue-router')['useRouter']
   const useSlots: typeof import('vue')['useSlots']
   const useTableHeight: typeof import('../src/hooks/pageList')['useTableHeight']
+  const useTableHeightPagination: typeof import('../src/hooks/pageList')['useTableHeightPagination']
   const useToggle: typeof import('@vueuse/core')['useToggle']
   const warningMessage: typeof import('../src/hooks/useMessage')['warningMessage']
   const warningNotify: typeof import('../src/hooks/useNotification')['warningNotify']

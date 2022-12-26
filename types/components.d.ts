@@ -9,6 +9,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     DataForm: typeof import('./../src/components/DataForm/index.vue')['default']
     DialogForm: typeof import('./../src/components/DialogForm/index.vue')['default']
+    FormItemGi: typeof import('./../src/components/FormItemGi/index.vue')['default']
     IconSelect: typeof import('./../src/components/IconSelect/index.vue')['default']
     Index2: typeof import('./../src/components/DataForm/index2.vue')['default']
     Index3: typeof import('./../src/components/IconSelect/index3.vue')['default']
@@ -27,7 +28,11 @@ declare module '@vue/runtime-core' {
     TBreadcrumb: typeof import('tdesign-vue-next')['Breadcrumb']
     TBreadcrumbItem: typeof import('tdesign-vue-next')['BreadcrumbItem']
     TButton: typeof import('tdesign-vue-next')['Button']
+    TCard: typeof import('tdesign-vue-next')['Card']
+    TCheckbox: typeof import('tdesign-vue-next')['Checkbox']
     TCol: typeof import('tdesign-vue-next')['Col']
+    TCollapse: typeof import('tdesign-vue-next')['Collapse']
+    TCollapsePanel: typeof import('tdesign-vue-next')['CollapsePanel']
     TConfigProvider: typeof import('tdesign-vue-next')['ConfigProvider']
     TContent: typeof import('tdesign-vue-next')['Content']
     TDialog: typeof import('tdesign-vue-next')['Dialog']
@@ -37,6 +42,7 @@ declare module '@vue/runtime-core' {
     TFormItem: typeof import('tdesign-vue-next')['FormItem']
     THeader: typeof import('tdesign-vue-next')['Header']
     TInput: typeof import('tdesign-vue-next')['Input']
+    TInputAdornment: typeof import('tdesign-vue-next')['InputAdornment']
     TInputNumber: typeof import('tdesign-vue-next')['InputNumber']
     TLayout: typeof import('tdesign-vue-next')['Layout']
     TLink: typeof import('tdesign-vue-next')['Link']
@@ -47,6 +53,7 @@ declare module '@vue/runtime-core' {
     TPopconfirm: typeof import('tdesign-vue-next')['Popconfirm']
     TRadio: typeof import('tdesign-vue-next')['Radio']
     TRadioGroup: typeof import('tdesign-vue-next')['RadioGroup']
+    Tree: typeof import('./../src/components/Tree/index.vue')['default']
     TRow: typeof import('tdesign-vue-next')['Row']
     TSelect: typeof import('tdesign-vue-next')['Select']
     TSpace: typeof import('tdesign-vue-next')['Space']
@@ -55,5 +62,6 @@ declare module '@vue/runtime-core' {
     TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
     TTabs: typeof import('tdesign-vue-next')['Tabs']
     TTextarea: typeof import('tdesign-vue-next')['Textarea']
+    TTree: typeof import('tdesign-vue-next')['Tree']
   }
 }

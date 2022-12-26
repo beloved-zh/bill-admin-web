@@ -1,9 +1,20 @@
+import type { StateEnum } from "@/enums/systemEnums"
+
 /**
  * 字典选项
  */
 export interface Option {
     label: string;
     value: string;
+}
+
+export interface BaseEntity {
+    state: StateEnum;
+    remark: string;
+    createBy: string;
+    createTime: string;
+    updateBy: string;
+    updateTime: string;
 }
 
 export interface IconItem {
@@ -24,8 +35,8 @@ export interface IconFont {
 }
 
 export interface PageParams {
-    pageNum?: number;
-    pageSize?: number;
+    pageNum: number;
+    pageSize: number;
 }
 
 export interface PageInfo<T> {

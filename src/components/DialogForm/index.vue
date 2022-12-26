@@ -48,8 +48,21 @@ const formRef = ref<InstanceType<typeof Form>>()
 
 const dialogVisible = ref(false)
 
+const closeDialog = () => {
+  if (!formRef.value) {
+    return
+  }
+  dialogVisible.value = false
+  formRef.value.clearValidate()
+  formRef.value.reset()
+  emit('close')
+}
+
 watch(() => props.show, val => {
   dialogVisible.value = val
+  if (!props.show) {
+    closeDialog()
+  }
 }, {
   deep: true,
   immediate: true
@@ -60,13 +73,6 @@ watch(() => dialogVisible, val => {
 }, {
   deep: true
 })
-
-const closeDialog = () => {
-  dialogVisible.value = false
-  formRef.value.clearValidate()
-  formRef.value.reset()
-  emit('close')
-}
 
 const submitForm = async () => {
   const validate = await formRef.value.validate()
@@ -106,7 +112,7 @@ defineExpose({
       :label-align="labelAlign"
       :scroll-to-first-error="scrollToFirstError"
       :reset-type="resetType"
-      :style="{ height }"
+      :style="{ 'max-height': height }"
     >
       <slot />
     </t-form>
